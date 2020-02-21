@@ -1,6 +1,9 @@
 package Entities;
 
-public class Distance extends Obstacle {
+import Interfaces.Obstacle;
+import Interfaces.Overcomeable;
+
+public class Distance implements Obstacle {
     private int id;
     private int length;
     private static int counter;
@@ -10,12 +13,22 @@ public class Distance extends Obstacle {
         this.length = length;
     }
 
-    public int getLength() {
-        return length;
-    }
-
     public int getId() {
         return id;
     }
 
+    @Override
+    public boolean performAction(Overcomeable participant) {
+        return participant.run(this);
+    }
+
+    @Override
+    public int getHeight() {
+        return 0;
+    }
+
+    @Override
+    public int getLength() {
+        return length;
+    }
 }

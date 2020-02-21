@@ -1,11 +1,11 @@
 import java.util.ArrayList;
 
-import Entities.Obstacle
 import Entities.Cat;
 import Entities.Robot;
 import Entities.Human;
 import Entities.Wall;
 import Entities.Distance;
+import Interfaces.Obstacle;
 import Interfaces.Overcomeable;
 
 public class Main {
@@ -29,10 +29,12 @@ public class Main {
 
         for (Overcomeable participant : participants) {
             for (Obstacle obstacle : obstacles) {
-                participant.overcome(obstacle);
+                if (!obstacle.performAction(participant)) {
+                    System.out.println(participant.getName() + " сходит с дистанции...");
+                    break;
+                }
             }
-
+            System.out.println(System.lineSeparator());
         }
-
     }
 }

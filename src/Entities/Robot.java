@@ -1,5 +1,6 @@
 package Entities;
 
+import Interfaces.Obstacle;
 import Interfaces.Overcomeable;
 
 public class Robot implements Overcomeable {
@@ -18,14 +19,16 @@ public class Robot implements Overcomeable {
     }
 
     @Override
-    public boolean overcome(Wall wall) {
-        System.out.println((this.jumpHeight >= wall.getHeight()) ? "Робот перепрыгивает" : "Робот не смог перепрыгнуть");
+    public boolean jump(Obstacle wall) {
+        System.out.println((this.jumpHeight >= wall.getHeight()) ? "Робот " + this.getName() + " перепрыгивает "
+                + wall.getHeight() + " м." : "Робот " + this.getName() + " не смог перепрыгнуть " + wall.getHeight() + " м.");
         return this.jumpHeight >= wall.getHeight();
     }
 
     @Override
-    public boolean overcome(Distance distance) {
-        System.out.println((this.runDistance >= distance.getLength()) ? "Робот пробежал" : "Робот не смог пробежать");
+    public boolean run(Obstacle distance) {
+        System.out.println((this.runDistance >= distance.getLength()) ? "Робот " + this.getName() + " пробежал "
+                + distance.getLength() + " м." : "Робот " + this.getName() + " не смог пробежать " + distance.getLength() + " м.");
         return this.runDistance >= distance.getLength();
     }
 }

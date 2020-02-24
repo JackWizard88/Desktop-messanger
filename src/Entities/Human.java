@@ -17,15 +17,23 @@ public class Human implements Overcomeable {
 
     @Override
     public boolean jump(Obstacle wall) {
-        System.out.println((this.jumpHeight >= wall.getHeight()) ? "Человек " + this.getName() + " перепрыгивает "
-                + wall.getHeight() + " м." : "Человек " + this.getName() + " не смог перепрыгнуть " + wall.getHeight() + " м.");
+        if (this.jumpHeight >= wall.getHeight()) {
+            System.out.println("Человек " + this.getName() + " перепрыгивает "
+                    + wall.getHeight() + " м.");
+        } else {
+            System.out.println("Человек " + this.getName() + " не смог перепрыгнуть " + wall.getHeight() + " м.");
+        }
         return this.jumpHeight >= wall.getHeight();
     }
 
     @Override
     public boolean run(Obstacle distance) {
-        System.out.println((this.runDistance >= distance.getLength()) ? "Человек " + this.getName() + " пробежал "
-                + distance.getLength() + " м." : "Человек " + this.getName() + " не смог пробежать " + distance.getLength() + " м.");
+        if (this.runDistance >= distance.getLength()) {
+            System.out.println("Человек " + this.getName() + " пробежал "
+                    + distance.getLength() + " м.");
+        } else {
+            System.out.println("Человек " + this.getName() + " не смог пробежать " + distance.getLength() + " м.");
+        }
         return this.runDistance >= distance.getLength();
     }
 

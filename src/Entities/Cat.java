@@ -16,15 +16,23 @@ public class Cat implements Overcomeable {
 
     @Override
     public boolean jump(Obstacle wall) {
-        System.out.println((this.jumpHeight >= wall.getHeight()) ? "Кот " + this.getName() + " перепрыгивает "
-                + wall.getHeight() + " м." : "Кот " + this.getName() + " не смог перепрыгнуть " + wall.getHeight() + " м.");
+        if (this.jumpHeight >= wall.getHeight()) {
+            System.out.println("Кот " + this.getName() + " перепрыгивает "
+                    + wall.getHeight() + " м.");
+        } else {
+            System.out.println("Кот " + this.getName() + " не смог перепрыгнуть " + wall.getHeight() + " м.");
+        }
         return this.jumpHeight >= wall.getHeight();
     }
 
     @Override
     public boolean run(Obstacle distance) {
-        System.out.println((this.runDistance >= distance.getLength()) ? "Кот " + this.getName() + " пробежал "
-                + distance.getLength() + " м." : "Кот " + this.getName() + " не смог пробежать " + distance.getLength() + " м.");
+        if (this.runDistance >= distance.getLength()) {
+            System.out.println("Кот " + this.getName() + " пробежал "
+                    + distance.getLength() + " м.");
+        } else {
+            System.out.println("Кот " + this.getName() + " не смог пробежать " + distance.getLength() + " м.");
+        }
         return this.runDistance >= distance.getLength();
     }
 

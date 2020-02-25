@@ -1,12 +1,14 @@
+package Lesson1;
+
 import java.util.ArrayList;
 
-import Entities.Cat;
-import Entities.Robot;
-import Entities.Human;
-import Entities.Wall;
-import Entities.Distance;
-import Interfaces.Obstacle;
-import Interfaces.Overcomeable;
+import Lesson1.Entities.Cat;
+import Lesson1.Entities.Robot;
+import Lesson1.Entities.Human;
+import Lesson1.Entities.Wall;
+import Lesson1.Entities.Distance;
+import Lesson1.Interfaces.Obstacle;
+import Lesson1.Interfaces.Overcomeable;
 
 public class Main {
     public static void main(String[] args) {

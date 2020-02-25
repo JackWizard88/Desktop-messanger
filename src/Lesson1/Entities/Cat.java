@@ -1,7 +1,7 @@
-package Entities;
+package Lesson1.Entities;
 
-import Interfaces.Obstacle;
-import Interfaces.Overcomeable;
+import Lesson1.Interfaces.Obstacle;
+import Lesson1.Interfaces.Overcomeable;
 
 public class Cat implements Overcomeable {
     private String name;

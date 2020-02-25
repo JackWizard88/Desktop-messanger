@@ -1,4 +1,4 @@
-package Interfaces;
+package Lesson1.Interfaces;
 
 
 public interface Overcomeable {

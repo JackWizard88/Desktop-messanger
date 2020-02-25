@@ -1,7 +1,4 @@
-package Interfaces;
-
-import Entities.Distance;
-import Entities.Wall;
+package Lesson1.Interfaces;
 
 public interface Obstacle {
     boolean performAction(Overcomeable participant);

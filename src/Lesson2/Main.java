@@ -13,7 +13,13 @@ public class Main {
     public static void main(String[] args) {
 
         String[][] array = createArray();
-        System.out.println(arraySumm(array));
+        try {
+            System.out.println(arraySumm(array));
+        } catch (MyArraySizeException e) {
+            System.out.println(e.getMessage());
+        } catch (MyArrayDataException e) {
+            System.out.println(e.getMessage());
+        }
     }
 
 
@@ -49,8 +55,6 @@ public class Main {
                                 System.out.println("Указанны неверные размерности массива.");
                             }
                         }
-
-
 
                         for (int i = 0; i < k; i++) {
                             for (int j = 0; j < l; j++) {
@@ -97,26 +101,22 @@ public class Main {
     }
 
     //метод для суммирования всех элементов массива в случае валидности
-    public static String arraySumm(String[][] stringArray) {
+    public static String arraySumm(String[][] stringArray) throws MyArraySizeException, MyArrayDataException {
         int summ = 0;
-        int x;
-        try {
-            if (stringArray.length > 4 || stringArray[0].length > 4) throw new MyArraySizeException();  //исключение если массив больше 4x4
+        if (stringArray.length > 4) throw new MyArraySizeException();  //исключение если столюец больше 4
 
-            for (int i = 0; i < stringArray.length; i++) {
+        for (int i = 0; i < stringArray.length; i++) {
+                if (stringArray[i].length > 4) throw new MyArraySizeException();  //исключение если стока больше 4
                 for (int j = 0; j < stringArray[i].length; j++) {
 
                     try {
-                        x = Integer.parseInt(stringArray[i][j]);
-                        summ += x;
-                    } catch (NumberFormatException e) {
-                        return (new MyArrayDataException(i, j)).getMessage(); // исключение если
+                        summ += Integer.parseInt(stringArray[i][j]);
+                    } catch (NumberFormatException | NullPointerException e) {
+                        throw new MyArrayDataException(i, j);  //кидаем исключение если элемент имеет неверный формат
                     }
                 }
             }
-        } catch (MyArraySizeException e) {
-           return e.getMessage();
-        }
+
         return "Сумма всех элементов массива = " + summ;
     }
 }

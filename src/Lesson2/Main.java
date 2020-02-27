@@ -15,13 +15,10 @@ public class Main {
         String[][] array = createArray();
         try {
             System.out.println(arraySumm(array));
-        } catch (MyArraySizeException e) {
-            System.out.println(e.getMessage());
-        } catch (MyArrayDataException e) {
+        } catch (MyArraySizeException | MyArrayDataException e) {
             System.out.println(e.getMessage());
         }
     }
-
 
     //метод для создания массива вручную или тестовым генератором
 
@@ -103,10 +100,10 @@ public class Main {
     //метод для суммирования всех элементов массива в случае валидности
     public static String arraySumm(String[][] stringArray) throws MyArraySizeException, MyArrayDataException {
         int summ = 0;
-        if (stringArray.length > 4) throw new MyArraySizeException();  //исключение если столюец больше 4
+        if (stringArray.length != 4) throw new MyArraySizeException();  //исключение если столбец больше 4
 
         for (int i = 0; i < stringArray.length; i++) {
-                if (stringArray[i].length > 4) throw new MyArraySizeException();  //исключение если стока больше 4
+                if (stringArray[i].length != 4) throw new MyArraySizeException();  //исключение если стока больше 4
                 for (int j = 0; j < stringArray[i].length; j++) {
 
                     try {

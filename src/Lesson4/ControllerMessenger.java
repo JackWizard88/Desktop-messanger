@@ -1,7 +1,5 @@
 package Lesson4;
 
-import javafx.beans.value.ChangeListener;
-import javafx.beans.value.ObservableValue;
 import javafx.fxml.FXML;
 import javafx.scene.control.*;
 import javafx.scene.input.KeyCode;
@@ -29,12 +27,7 @@ public class ControllerMessenger {
           UserListField.setItems(UserList.getUserList());
           UserListField.getSelectionModel().setSelectionMode(SelectionMode.SINGLE);
 
-          UserListField.getSelectionModel().selectedItemProperty().addListener(new ChangeListener<String>() {
-               @Override
-               public void changed(ObservableValue<? extends String> observable, String oldValue, String newValue) {
-                    UserList.setActiveUser(UserListField.getSelectionModel().getSelectedItem());
-               }
-          });
+          UserListField.getSelectionModel().selectedItemProperty().addListener((observable, oldValue, newValue) -> UserList.setActiveUser(UserListField.getSelectionModel().getSelectedItem()));
 
           SendButton.setOnAction(event -> sendMessage());
           chatClearButton.setOnAction(event -> ChatTextField.setText(""));

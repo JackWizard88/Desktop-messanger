@@ -9,17 +9,16 @@ public class UserList {
     private static ArrayList<String> users = new ArrayList<>();
     private static String activeUser;
 
-    public static void add(User name) {
-        users.add(name.toString());
+    public static void add(User user) {
+        users.add(user.toString());
     }
 
-    public static ObservableList getUserList() {
-        ObservableList<String> userList = FXCollections.observableList(users);
-        return userList;
+    public static ObservableList<String> getUserList() {
+        return FXCollections.observableList(users);
     }
 
     public static void setActiveUser(String user) {
-        activeUser = user.toString();
+        activeUser = user;
     }
 
     public static String getActiveUser() {

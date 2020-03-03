@@ -18,7 +18,7 @@ public class ControllerMessenger {
      private Button SendButton;
 
      @FXML
-     private ListView<?> UserListField;
+     private ListView<String> UserListField;
 
      @FXML
      private MenuItem chatClearButton;
@@ -47,7 +47,7 @@ public class ControllerMessenger {
 
      private void sendMessage() {
           if (!InputTextField.getText().equals("")) {
-               ChatTextField.setText(ChatTextField.getText() + UserList.getActiveUser() + InputTextField.getText() + "\n");
+               ChatTextField.setText(ChatTextField.getText() + UserList.getActiveUser() + ": " + InputTextField.getText() + "\n");
                InputTextField.clear();
           }
      }

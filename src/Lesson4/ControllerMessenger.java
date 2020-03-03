@@ -1,11 +1,9 @@
 package Lesson4;
 
+import javafx.beans.value.ChangeListener;
+import javafx.beans.value.ObservableValue;
 import javafx.fxml.FXML;
-import javafx.scene.control.Button;
-import javafx.scene.control.ListView;
-import javafx.scene.control.MenuItem;
-import javafx.scene.control.TextArea;
-import javafx.scene.control.TextField;
+import javafx.scene.control.*;
 import javafx.scene.input.KeyCode;
 
 public class ControllerMessenger {
@@ -29,6 +27,15 @@ public class ControllerMessenger {
      void initialize() {
 
           UserListField.setItems(UserList.getUserList());
+          UserListField.getSelectionModel().setSelectionMode(SelectionMode.SINGLE);
+
+          UserListField.getSelectionModel().selectedItemProperty().addListener(new ChangeListener<String>() {
+               @Override
+               public void changed(ObservableValue<? extends String> observable, String oldValue, String newValue) {
+                    UserList.setActiveUser(UserListField.getSelectionModel().getSelectedItem());
+               }
+          });
+
           SendButton.setOnAction(event -> sendMessage());
           chatClearButton.setOnAction(event -> ChatTextField.setText(""));
           InputTextField.setOnKeyPressed(keyEvent -> {
@@ -40,7 +47,7 @@ public class ControllerMessenger {
 
      private void sendMessage() {
           if (!InputTextField.getText().equals("")) {
-               ChatTextField.setText(ChatTextField.getText() + "Я: " + InputTextField.getText() + "\n");
+               ChatTextField.setText(ChatTextField.getText() + UserList.getActiveUser() + InputTextField.getText() + "\n");
                InputTextField.clear();
           }
      }

@@ -8,7 +8,7 @@ public class User {
     public User(String name) {
         this.id = ++id;
         this.name = name;
-        UserList.add(name);
+        UserList.add(this);
     }
 
     public String getName() {
@@ -21,5 +21,10 @@ public class User {
 
     public static int getId() {
         return id;
+    }
+
+    @Override
+    public String toString() {
+        return this.name;
     }
 }

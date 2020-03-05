@@ -24,6 +24,7 @@ public class ControllerMessenger {
      @FXML
      void initialize() {
 
+          ChatTextField.setWrapText(true);
           UserListField.setItems(UserList.getUserList());
           UserListField.getSelectionModel().setSelectionMode(SelectionMode.SINGLE);
 

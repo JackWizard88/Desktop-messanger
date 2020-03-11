@@ -5,7 +5,7 @@ import javafx.collections.ObservableList;
 
 import java.util.ArrayList;
 
-public class UserList {
+public class ClientContext {
     private static ArrayList<String> users = new ArrayList<>();
     private static String activeUser;
 

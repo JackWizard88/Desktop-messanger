@@ -19,11 +19,14 @@ public class Main extends Application {
 
     public static void main(String[] args) {
 
-        new User("Ivanov");
-        new User("Krylov");
-        new User("Petrov");
-        new User("Sidorov");
 
+        //создание пользователей и добавление в список контактов
+        ClientContext.add(new User("Ivanov"));
+        ClientContext.add(new User("Krylov"));
+        ClientContext.add(new User("Petrov"));
+        ClientContext.add(new User("Sidorov"));
+
+        //запуск интерфейса
         launch(args);
     }
 }

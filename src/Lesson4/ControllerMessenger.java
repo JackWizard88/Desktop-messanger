@@ -7,43 +7,50 @@ import javafx.scene.input.KeyCode;
 public class ControllerMessenger {
 
      @FXML
-     private TextArea ChatTextField;
+     private TextArea chatTextField;
 
      @FXML
-     private TextField InputTextField;
+     private TextField inputTextField;
 
      @FXML
-     private Button SendButton;
+     private Button sendButton;
 
      @FXML
-     private ListView<String> UserListField;
+     private ListView<String> userListField;
 
      @FXML
      private MenuItem chatClearButton;
 
      @FXML
      void initialize() {
+          //перенос строк
+          chatTextField.setWrapText(true);
 
-          ChatTextField.setWrapText(true);
-          UserListField.setItems(UserList.getUserList());
-          UserListField.getSelectionModel().setSelectionMode(SelectionMode.SINGLE);
+          //наполнение таблицы пользователей
+          userListField.setItems(ClientContext.getUserList());
 
-          UserListField.getSelectionModel().selectedItemProperty().addListener((observable, oldValue, newValue) -> UserList.setActiveUser(UserListField.getSelectionModel().getSelectedItem()));
+          //модель селектора единичная
+          userListField.getSelectionModel().setSelectionMode(SelectionMode.SINGLE);
 
-          SendButton.setOnAction(event -> sendMessage());
-          chatClearButton.setOnAction(event -> ChatTextField.setText(""));
-          InputTextField.setOnKeyPressed(keyEvent -> {
+          //слушатель выбранного пользователя
+          userListField.getSelectionModel().selectedItemProperty().addListener((observable, oldValue, newValue) -> ClientContext.setActiveUser(userListField.getSelectionModel().getSelectedItem()));
+
+          //отправка сообщений и очистка чата
+          sendButton.setOnAction(event -> sendMessage());
+          chatClearButton.setOnAction(event -> chatTextField.setText(""));
+          inputTextField.setOnKeyPressed(keyEvent -> {
                if (keyEvent.getCode() == KeyCode.ENTER)  {
                     sendMessage();
                }
           });
      }
 
+     //метод отправки сообщений
      private void sendMessage() {
-          if (!InputTextField.getText().equals("")) {
-               ChatTextField.setText(ChatTextField.getText() + UserList.getActiveUser() + ": " + InputTextField.getText() + "\n");
-               InputTextField.clear();
+          if (!inputTextField.getText().isBlank()) {
+               chatTextField.appendText(ClientContext.getActiveUser() + ": " + inputTextField.getText() + "\n");
           }
+          inputTextField.clear();
      }
 }
 

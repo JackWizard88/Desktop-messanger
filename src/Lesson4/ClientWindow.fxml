@@ -13,19 +13,19 @@
 <?import javafx.scene.layout.BorderPane?>
 <?import javafx.scene.text.Font?>
 
-<BorderPane minHeight="400.0" minWidth="600.0" prefHeight="400.0" prefWidth="600.0" xmlns="http://javafx.com/javafx/11.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="Lesson4.ControllerMessenger">
+<BorderPane prefHeight="400.0" prefWidth="600.0" xmlns="http://javafx.com/javafx/11.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="Lesson4.ControllerMessenger">
    <center>
       <AnchorPane>
          <children>
             <AnchorPane scaleShape="false" AnchorPane.bottomAnchor="30.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
                <children>
-                  <TextArea fx:id="ChatTextField" editable="false" prefWidth="397.0" AnchorPane.bottomAnchor="1.0" AnchorPane.leftAnchor="1.0" AnchorPane.rightAnchor="2.0" AnchorPane.topAnchor="2.0" />
+                  <TextArea fx:id="chatTextField" editable="false" prefWidth="397.0" AnchorPane.bottomAnchor="1.0" AnchorPane.leftAnchor="1.0" AnchorPane.rightAnchor="2.0" AnchorPane.topAnchor="2.0" />
                </children>
             </AnchorPane>
             <AnchorPane AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0">
                <children>
-                  <TextField fx:id="InputTextField" prefWidth="315.0" promptText="Message" AnchorPane.bottomAnchor="2.0" AnchorPane.leftAnchor="1.0" AnchorPane.rightAnchor="85.0" AnchorPane.topAnchor="1.0" />
-                  <Button fx:id="SendButton" layoutX="327.0" layoutY="7.0" mnemonicParsing="false" prefWidth="80.0" text="Отправить" AnchorPane.bottomAnchor="2.0" AnchorPane.rightAnchor="2.0" AnchorPane.topAnchor="1.0" />
+                  <TextField fx:id="inputTextField" prefWidth="315.0" promptText="Message" AnchorPane.bottomAnchor="2.0" AnchorPane.leftAnchor="1.0" AnchorPane.rightAnchor="85.0" AnchorPane.topAnchor="1.0" />
+                  <Button fx:id="sendButton" layoutX="327.0" layoutY="7.0" mnemonicParsing="false" prefWidth="80.0" text="Отправить" AnchorPane.bottomAnchor="2.0" AnchorPane.rightAnchor="2.0" AnchorPane.topAnchor="1.0" />
                </children>
             </AnchorPane>
          </children>
@@ -34,7 +34,7 @@
    <left>
       <AnchorPane>
          <children>
-            <ListView fx:id="UserListField" prefWidth="196.0" AnchorPane.bottomAnchor="2.0" AnchorPane.leftAnchor="2.0" AnchorPane.rightAnchor="1.0" AnchorPane.topAnchor="29.0" />
+            <ListView fx:id="userListField" prefWidth="196.0" AnchorPane.bottomAnchor="2.0" AnchorPane.leftAnchor="2.0" AnchorPane.rightAnchor="1.0" AnchorPane.topAnchor="29.0" />
             <Label contentDisplay="TOP" prefHeight="29.0" text="Пользователи в сети:" underline="true" AnchorPane.leftAnchor="2.0" AnchorPane.rightAnchor="2.0" AnchorPane.topAnchor="2.0">
                <font>
                   <Font name="Tahoma" size="14.0" />

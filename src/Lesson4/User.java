@@ -8,7 +8,6 @@ public class User {
     public User(String name) {
         this.id = ++id;
         this.name = name;
-        UserList.add(this);
     }
 
     public String getName() {

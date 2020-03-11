@@ -2,7 +2,6 @@ package Lesson2;
 
 import Lesson2.MyExceptions.MyArrayDataException;
 import Lesson2.MyExceptions.MyArraySizeException;
-
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;

@@ -1,0 +1,52 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.*?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+<?import javafx.scene.text.*?>
+
+<BorderPane prefHeight="400.0" prefWidth="600.0" xmlns="http://javafx.com/javafx/10.0.2-internal" xmlns:fx="http://javafx.com/fxml/1" fx:controller="Lesson4.ControllerMessenger">
+   <center>
+      <AnchorPane>
+         <children>
+            <AnchorPane scaleShape="false" AnchorPane.bottomAnchor="30.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+               <children>
+                  <TextArea fx:id="chatTextField" editable="false" prefWidth="397.0" AnchorPane.bottomAnchor="1.0" AnchorPane.leftAnchor="1.0" AnchorPane.rightAnchor="2.0" AnchorPane.topAnchor="2.0" />
+               </children>
+            </AnchorPane>
+            <AnchorPane AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0">
+               <children>
+                  <TextField fx:id="inputTextField" prefWidth="315.0" promptText="Message" AnchorPane.bottomAnchor="2.0" AnchorPane.leftAnchor="1.0" AnchorPane.rightAnchor="85.0" AnchorPane.topAnchor="1.0" />
+                  <Button fx:id="sendButton" layoutX="327.0" layoutY="7.0" mnemonicParsing="false" prefWidth="80.0" text="Отправить" AnchorPane.bottomAnchor="2.0" AnchorPane.rightAnchor="2.0" AnchorPane.topAnchor="1.0" />
+               </children>
+            </AnchorPane>
+         </children>
+      </AnchorPane>
+   </center>
+   <left>
+      <AnchorPane>
+         <children>
+            <ListView fx:id="userListField" prefWidth="196.0" AnchorPane.bottomAnchor="2.0" AnchorPane.leftAnchor="2.0" AnchorPane.rightAnchor="1.0" AnchorPane.topAnchor="29.0" />
+            <Label contentDisplay="TOP" prefHeight="29.0" text="Пользователи в сети:" underline="true" AnchorPane.leftAnchor="2.0" AnchorPane.rightAnchor="2.0" AnchorPane.topAnchor="2.0">
+               <font>
+                  <Font name="Tahoma" size="14.0" />
+               </font>
+               <opaqueInsets>
+                  <Insets left="5.0" />
+               </opaqueInsets>
+            </Label>
+         </children>
+      </AnchorPane>
+   </left>
+   <top>
+      <MenuBar BorderPane.alignment="CENTER">
+        <menus>
+          <Menu mnemonicParsing="false" text="Меню">
+            <items>
+              <MenuItem fx:id="chatClearButton" mnemonicParsing="false" text="Очистить чат" />
+            </items>
+          </Menu>
+        </menus>
+      </MenuBar>
+   </top>
+</BorderPane>

@@ -4,29 +4,32 @@ import java.util.Arrays;
 
 public class Main {
 
+    static final int SIZE = 10_000_000;
+    static final int HALF = SIZE / 2;
+    static float[] arr = new float[SIZE];
+    static float[] arr1 = new float[SIZE];
+
     public static void main(String[] args) {
-        calcMethod1();
-        calcMethod2();
+
+        Arrays.fill(arr, 1.0f);
+        calcMethod1(arr);
+        Arrays.fill(arr1, 1.0f);
+        calcMethod2(arr1);
+
+        System.out.println(Arrays.equals(arr, arr1));
     }
 
     //метод однопоточного расчета
-    public static void calcMethod1() {
-        final int SIZE = 10000000;
-        float[] arr = new float[SIZE];
+    public static void calcMethod1(float[] arr) {
 
-        Arrays.fill(arr, 1f);
         long a = System.currentTimeMillis();
-
-        calculation(arr);
-
+        calculation(arr, 0, SIZE);
         System.out.println("Estimated time (single thread), ms: " + (System.currentTimeMillis() - a));
     }
 
     //метод многопоточного расчета
-    public static void calcMethod2() {
-        final int SIZE = 10000000;
-        final int HALF = SIZE / 2;
-        float[] arr = new float[SIZE];
+    public static void calcMethod2(float[] arr) {
+
         float[] a1 = new float[HALF];
         float[] a2 = new float[HALF];
 
@@ -35,8 +38,8 @@ public class Main {
         System.arraycopy(arr, 0, a1, 0, HALF);
         System.arraycopy(arr, HALF, a2, 0, HALF);
 
-        Thread thread1 =  new Thread(() -> calculation(a1));
-        Thread thread2 =  new Thread(() -> calculation(a2));
+        Thread thread1 =  new Thread(() -> calculation(a1, 0, HALF));
+        Thread thread2 =  new Thread(() -> calculation(a2, HALF , HALF));
 
         thread1.start();
         thread2.start();
@@ -56,9 +59,9 @@ public class Main {
     }
 
     //метод калькуляций по формуле из ТЗ
-    public static void calculation(float[] arr) {
-        for (int i = 0; i < arr.length; i++) {
-            arr[i] = (float)(arr[i] * Math.sin(0.2f + i / 5) * Math.cos(0.2f + i / 5) * Math.cos(0.4f + i / 2));
+    public static void calculation(float[] arr, int shift, int length) {
+        for (int i = 0; i < length; i++) {
+            arr[i] = (float)(arr[i] * Math.sin(0.2f + (i + shift) / 5) * Math.cos(0.2f + (i + shift) / 5) * Math.cos(0.4f + (i + shift) / 2));
         }
     }
 }

@@ -57,6 +57,15 @@ public class Server {
             User user = new User(name, in, out, clientSocket);
             userlist.put(user, clientSocket);
             System.out.println(name + " подключился");
+            for (Map.Entry<User, Socket> entry : userlist.entrySet()) {
+                if(!user.equals(entry.getKey())) {
+                    try {
+                        entry.getKey().getOut().writeUTF(name + " подключился");
+                    } catch (IOException el) {
+                        el.printStackTrace();
+                    }
+                }
+            }
             new Thread(() -> messageReader(user)).start();
             new Thread(() -> messageSender()).start();
 
@@ -75,6 +84,15 @@ public class Server {
             } catch (SocketException e) {
                 try {
                     System.out.println(user.getName() + " отключился");
+                    for (Map.Entry<User, Socket> entry : userlist.entrySet()) {
+                        if(!user.equals(entry.getKey())) {
+                            try {
+                                entry.getKey().getOut().writeUTF(user.getName() + " отключился");
+                            } catch (IOException el) {
+                                el.printStackTrace();
+                            }
+                        }
+                    }
                     user.getSocket().close();
                     userlist.remove(user);
                     break;

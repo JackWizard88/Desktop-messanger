@@ -50,17 +50,22 @@ public class NetworkService {
                         String[] messageParts = message.split("\\s+", 3);
                         String event = messageParts[1];
                         String data = messageParts[2];
+                        while (curentWindow == null) {
+                            try {
+                                Thread.sleep(100);
+                            } catch (InterruptedException e) {
+                                e.printStackTrace();
+                            }
+                        }
                         if (event.equals("add")) {
                             userlist.add(data);
                             curentWindow.updateUserListField(userlist);
                         } else if (event.equals("remove")) {
                             userlist.remove(data);
                             curentWindow.updateUserListField(userlist);
+                        } else if (event.equals("clear")) {
+                            userlist.clear();
                         }
-                    }
-                    else if (messageHandler != null) {
-
-                        //messageHandler.accept(message);
                     }
                     else curentWindow.appendMessage(message);
                 } catch (IOException e) {

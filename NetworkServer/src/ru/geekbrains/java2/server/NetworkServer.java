@@ -60,19 +60,21 @@ public class NetworkServer {
 
     public synchronized void subscribe(ClientHandler clientHandler) throws IOException {
         clients.add(clientHandler);
-        sendUserList("add", clientHandler.getNickname());
+        for (ClientHandler client : clients) {
+            client.sendMessage("/userList" + " clear all");
+            for (ClientHandler client1 : clients) {
+                client.sendMessage("/userList" + " " + "add" + " " + client1.getNickname());
+            }
+        }
     }
 
     public synchronized void unsubscribe(ClientHandler clientHandler) throws IOException {
         clients.remove(clientHandler);
         if (!clients.isEmpty()) {
-            sendUserList("remove", clientHandler.getNickname());
+            for (ClientHandler client : clients) {
+                client.sendMessage("/userList" + " remove " + clientHandler.getNickname());
+            }
         }
     }
 
-    public synchronized void sendUserList(String event, String nickname) throws IOException {
-        for (ClientHandler client : clients) {
-            client.sendMessage("/userList" + " " + event + " " + nickname);
-        }
-    }
 }

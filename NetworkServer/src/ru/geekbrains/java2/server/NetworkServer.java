@@ -28,7 +28,7 @@ public class NetworkServer {
             while (true) {
                 System.out.println("Connection awaiting...");
                 Socket clientSocket = serverSocket.accept();
-                System.out.println("Client conected");
+                System.out.println("Client connected");
                 createClientHandler(clientSocket);
             }
         } catch (IOException e) {

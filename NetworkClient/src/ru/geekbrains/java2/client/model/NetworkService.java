@@ -59,9 +59,10 @@ public class NetworkService {
                         }
                     }
                     else if (messageHandler != null) {
-                        curentWindow.appendMessage(message);
+
                         //messageHandler.accept(message);
                     }
+                    else curentWindow.appendMessage(message);
                 } catch (IOException e) {
                     System.out.println("ReadThread was interrupted");
                     return;

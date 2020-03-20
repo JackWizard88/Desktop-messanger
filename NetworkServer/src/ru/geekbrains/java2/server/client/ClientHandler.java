@@ -51,6 +51,7 @@ public class ClientHandler {
     private void closeConnection() {
         try {
             networkServer.unsubscribe(this);
+            networkServer.sendMessage(nickname + " disconnected", this, "/all");
             clientSocket.close();
         } catch (IOException e) {
             e.printStackTrace();
@@ -80,7 +81,7 @@ public class ClientHandler {
         }
     }
 
-    private void authentication() throws IOException {
+    private synchronized void authentication() throws IOException {
         while (true) {
             String message = in.readUTF();
             // "/auth login password"
@@ -93,8 +94,8 @@ public class ClientHandler {
                     sendMessage("No such login&username data");
                 } else {
                     nickname = username;
-                    networkServer.sendMessage(nickname + " entered chat", this, "/all");
                     sendMessage("/auth " + nickname);
+                    networkServer.sendMessage(nickname + " connected", this, "/all");
                     networkServer.subscribe(this);
                     break;
                 }

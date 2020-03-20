@@ -10,7 +10,6 @@ import ru.geekbrains.java2.client.controller.fxview.FxChatWindow;
 import ru.geekbrains.java2.client.model.NetworkService;
 import javax.swing.*;
 import java.io.IOException;
-import java.util.function.Consumer;
 
 public class ClientController {
 
@@ -54,25 +53,23 @@ public class ClientController {
         primaryStage.setOnCloseRequest(e->{
             System.exit(0);
         });
-
-
-
     }
 
     private void openChat() {
         FXMLLoader loaderChat = new FXMLLoader();
         try {
             rootChat = loaderChat.load(getClass().getResourceAsStream("fxview/FxChatWindow.fxml"));
+            FxChatWindow clientChat  = loaderChat.getController();
+            clientChat.setClientController(this);
+            Scene scene = new Scene(rootChat, 600, 400);
+            primaryStage.setTitle(nickname + " via JackMessenger");
+            primaryStage.setScene(scene);
+            primaryStage.show();
+            //networkService.setMessageHandler(msg -> clientChat.appendMessage(msg));
+            networkService.setCurentWindow(clientChat);
         } catch (IOException e) {
             e.printStackTrace();
         }
-        FxChatWindow clientChat  = loaderChat.getController();
-        clientChat.setClientController(this);
-        Scene scene = new Scene(rootChat, 600, 400);
-        primaryStage.setTitle(nickname + " via JackMessenger");
-        primaryStage.setScene(scene);
-        primaryStage.show();
-        networkService.setMessageHandler(msg -> clientChat.appendMessage(msg));
     }
 
     private void setUserName(String nickname) {

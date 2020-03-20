@@ -19,6 +19,7 @@ public class NetworkService {
     private DataOutputStream out;
 
     private Consumer<String> messageHandler;
+    private FxChatWindow curentWindow;
     private AuthEvent successfulAuthEvent;
     private String nickname;
     private List<String> userlist = new ArrayList<>();
@@ -51,14 +52,15 @@ public class NetworkService {
                         String data = messageParts[2];
                         if (event.equals("add")) {
                             userlist.add(data);
-                            FxChatWindow.updateUserListField(userlist);
+                            curentWindow.updateUserListField(userlist);
                         } else if (event.equals("remove")) {
                             userlist.remove(data);
-                            FxChatWindow.updateUserListField(userlist);
+                            curentWindow.updateUserListField(userlist);
                         }
                     }
                     else if (messageHandler != null) {
-                        messageHandler.accept(message);
+                        curentWindow.appendMessage(message);
+                        //messageHandler.accept(message);
                     }
                 } catch (IOException e) {
                     System.out.println("ReadThread was interrupted");
@@ -78,6 +80,10 @@ public class NetworkService {
 
     public void setMessageHandler(Consumer<String> messageHandler) {
         this.messageHandler = messageHandler;
+    }
+
+    public void setCurentWindow(FxChatWindow curentWindow) {
+        this.curentWindow = curentWindow;
     }
 
     public void setSuccessfulAuthEvent(AuthEvent successfulAuthEvent) {

@@ -5,7 +5,6 @@ import javafx.fxml.FXML;
 import javafx.scene.control.*;
 import javafx.scene.input.KeyCode;
 import ru.geekbrains.java2.client.controller.ClientController;
-
 import java.util.List;
 
 public class FxChatWindow {
@@ -33,6 +32,8 @@ public class FxChatWindow {
     
     @FXML
     void initialize() {
+
+        userListField.getSelectionModel().setSelectionMode(SelectionMode.SINGLE);
         //перенос строк
         chatTextField.setWrapText(true);
         //отправка сообщений и очистка чата

@@ -23,16 +23,16 @@ public class NetworkServer {
 
     public void start() {
         try (ServerSocket serverSocket = new ServerSocket(port)) {
-            System.out.println("Сервер был успешно запущен на порту " + port);
+            System.out.println("Server started on port " + port);
             authService.start();
             while (true) {
-                System.out.println("Ожидание клиентского подключения...");
+                System.out.println("Connection awaiting...");
                 Socket clientSocket = serverSocket.accept();
-                System.out.println("Клиент подлючился");
+                System.out.println("Client conected");
                 createClientHandler(clientSocket);
             }
         } catch (IOException e) {
-            System.out.println("Ошибка при работе сервера");
+            System.out.println("Error");
             e.printStackTrace();
         } finally {
             authService.stop();
@@ -51,20 +51,28 @@ public class NetworkServer {
     public synchronized void sendMessage(String message, ClientHandler owner, String acceptor) throws IOException {
         for (ClientHandler client : clients) {
             if (acceptor.equals("/all")) {
-                if (client != owner) {
-                    client.sendMessage(message);
-                }
+                if (client != owner) client.sendMessage(message);
             } else if (client != owner && client.getNickname().equals(acceptor)) {
                 client.sendMessage(message);
             }
         }
     }
 
-    public synchronized void subscribe(ClientHandler clientHandler) {
+    public synchronized void subscribe(ClientHandler clientHandler) throws IOException {
         clients.add(clientHandler);
+        sendUserList("add", clientHandler.getNickname());
     }
 
-    public synchronized void unsubscribe(ClientHandler clientHandler) {
+    public synchronized void unsubscribe(ClientHandler clientHandler) throws IOException {
         clients.remove(clientHandler);
+        if (!clients.isEmpty()) {
+            sendUserList("remove", clientHandler.getNickname());
+        }
+    }
+
+    public synchronized void sendUserList(String event, String nickname) throws IOException {
+        for (ClientHandler client : clients) {
+            client.sendMessage("/userList" + " " + event + " " + nickname);
+        }
     }
 }

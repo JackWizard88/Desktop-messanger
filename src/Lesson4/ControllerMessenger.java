@@ -47,7 +47,7 @@ public class ControllerMessenger {
 
      //метод отправки сообщений
      private void sendMessage() {
-          if (!inputTextField.getText().isBlank()) {
+          if (!inputTextField.getText().trim().isEmpty()) {
                chatTextField.appendText(ClientContext.getActiveUser() + ": " + inputTextField.getText() + "\n");
           }
           inputTextField.clear();

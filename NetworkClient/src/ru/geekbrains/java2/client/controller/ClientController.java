@@ -1,23 +1,28 @@
 package ru.geekbrains.java2.client.controller;
 
-import ru.geekbrains.java2.client.view.AuthDialog;
-import ru.geekbrains.java2.client.view.ClientChat;
+import javafx.application.Platform;
+import javafx.fxml.FXMLLoader;
+import javafx.scene.Parent;
+import javafx.scene.Scene;
+import javafx.stage.Stage;
+import ru.geekbrains.java2.client.controller.fxview.FxAuthDialog;
+import ru.geekbrains.java2.client.controller.fxview.FxChatWindow;
 import ru.geekbrains.java2.client.model.NetworkService;
-
 import javax.swing.*;
 import java.io.IOException;
+import java.util.function.Consumer;
 
 public class ClientController {
 
     private final NetworkService networkService;
-    private final AuthDialog authDialog;
-    private final ClientChat clientChat;
+    private Stage primaryStage;
+    private Parent rootChat;
     private String nickname;
 
-    public ClientController(String serverHost, int serverPort) {
+
+    public ClientController(String serverHost, int serverPort, Stage primaryStage) {
         this.networkService = new NetworkService(serverHost, serverPort);
-        this.authDialog = new AuthDialog(this);
-        this.clientChat = new ClientChat(this);
+        this.primaryStage = primaryStage;
     }
 
     public void runApplication() throws IOException {
@@ -28,16 +33,46 @@ public class ClientController {
     private void runAuthProcess() {
         networkService.setSuccessfulAuthEvent(nickname -> {
             setUserName(nickname);
-            openChat();
+            Platform.runLater(()->{
+                openChat();
+            });
         });
-        authDialog.setVisible(true);
+
+        FXMLLoader loaderAuth = new FXMLLoader();
+        try {
+            rootChat = loaderAuth.load(getClass().getResourceAsStream("fxview/FxAuthDialog.fxml"));
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        FxAuthDialog authDialog  = loaderAuth.getController();
+        authDialog.setClientController(this);
+
+        Scene scene = new Scene(rootChat, 300, 200);
+        primaryStage.setTitle("LogIn Messenger");
+        primaryStage.setScene(scene);
+        primaryStage.show();
+        primaryStage.setOnCloseRequest(e->{
+            System.exit(0);
+        });
+
+
 
     }
 
     private void openChat() {
-        authDialog.dispose();
-        networkService.setMessageHandler(clientChat::appendMessage);
-        clientChat.setVisible(true);
+        FXMLLoader loaderChat = new FXMLLoader();
+        try {
+            rootChat = loaderChat.load(getClass().getResourceAsStream("fxview/FxChatWindow.fxml"));
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        FxChatWindow clientChat  = loaderChat.getController();
+        clientChat.setClientController(this);
+        Scene scene = new Scene(rootChat, 600, 400);
+        primaryStage.setTitle(nickname + " via JackMessenger");
+        primaryStage.setScene(scene);
+        primaryStage.show();
+        networkService.setMessageHandler(msg -> clientChat.appendMessage(msg));
     }
 
     private void setUserName(String nickname) {

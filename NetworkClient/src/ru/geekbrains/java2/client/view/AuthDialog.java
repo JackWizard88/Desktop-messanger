@@ -35,13 +35,12 @@ public class AuthDialog extends JFrame {
     }
 
     private void onOK() {
-        System.out.println("нажата кнопка");
         String login = loginText.getText().trim();
         String pass = new String(passwordText.getPassword()).trim();
         try {
             controller.sendAuthMessage(login, pass);
         } catch (IOException e) {
-            JOptionPane.showMessageDialog(this, "Ошибка при попытки аутентификации");
+            JOptionPane.showMessageDialog(this, "Ошибка при попытке аутентификации");
         }
     }
 

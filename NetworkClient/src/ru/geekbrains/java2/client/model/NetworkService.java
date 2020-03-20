@@ -1,11 +1,13 @@
 package ru.geekbrains.java2.client.model;
 
 import ru.geekbrains.java2.client.controller.AuthEvent;
-
+import ru.geekbrains.java2.client.controller.fxview.FxChatWindow;
 import java.io.DataInputStream;
 import java.io.DataOutputStream;
 import java.io.IOException;
 import java.net.Socket;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.function.Consumer;
 
 public class NetworkService {
@@ -19,6 +21,7 @@ public class NetworkService {
     private Consumer<String> messageHandler;
     private AuthEvent successfulAuthEvent;
     private String nickname;
+    private List<String> userlist = new ArrayList<>();
 
     public NetworkService(String host, int port) {
         this.host = host;
@@ -42,11 +45,23 @@ public class NetworkService {
                         nickname = messageParts[1];
                         successfulAuthEvent.authIsSuccessful(nickname);
                     }
+                    else if (message.startsWith("/userList")) {
+                        String[] messageParts = message.split("\\s+", 3);
+                        String event = messageParts[1];
+                        String data = messageParts[2];
+                        if (event.equals("add")) {
+                            userlist.add(data);
+                            FxChatWindow.updateUserListField(userlist);
+                        } else if (event.equals("remove")) {
+                            userlist.remove(data);
+                            FxChatWindow.updateUserListField(userlist);
+                        }
+                    }
                     else if (messageHandler != null) {
                         messageHandler.accept(message);
                     }
                 } catch (IOException e) {
-                    System.out.println("Поток чтения был прерван!");
+                    System.out.println("ReadThread was interrupted");
                     return;
                 }
             }

@@ -72,7 +72,7 @@ public class ClientHandler {
                 System.out.printf("private message from %s to %s: %s%n", nickname, toNickname, messageText);
                 networkServer.sendMessage("private from " + nickname + ": " + messageText, this, toNickname);
             } else {
-                System.out.printf("Всем от %s: %s%n", nickname, message);
+                System.out.printf("To all from %s: %s%n", nickname, message);
                 if ("/end".equals(message)) {
                     return;
                 }
@@ -91,7 +91,7 @@ public class ClientHandler {
                 String password = messageParts[2];
                 String username = networkServer.getAuthService().getUsernameByLoginAndPassword(login, password);
                 if (username == null) {
-                    sendMessage("No such login&username data");
+                    sendMessage("/err " + "incorrect account data");
                 } else {
                     nickname = username;
                     sendMessage("/auth " + nickname);

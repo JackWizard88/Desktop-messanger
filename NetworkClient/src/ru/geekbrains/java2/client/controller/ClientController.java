@@ -62,10 +62,12 @@ public class ClientController {
             FxChatWindow clientChat  = loaderChat.getController();
             clientChat.setClientController(this);
             Scene scene = new Scene(rootChat, 600, 400);
+            scene.getStylesheets().add(getClass().getResource("userList.css").toExternalForm());
             primaryStage.setTitle(nickname + " via JackMessenger");
             primaryStage.setScene(scene);
+            primaryStage.setMinHeight(200);
+            primaryStage.setMinWidth(400);
             primaryStage.show();
-            //networkService.setMessageHandler(msg -> clientChat.appendMessage(msg));
             networkService.setCurentWindow(clientChat);
         } catch (IOException e) {
             e.printStackTrace();

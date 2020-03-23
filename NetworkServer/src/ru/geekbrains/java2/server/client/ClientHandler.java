@@ -50,8 +50,10 @@ public class ClientHandler {
 
     private void closeConnection() {
         try {
-            networkServer.unsubscribe(this);
-            networkServer.sendMessage(nickname + " disconnected", this, "/all");
+            if (nickname != null) {
+                networkServer.unsubscribe(this);
+                networkServer.sendMessage(nickname + " disconnected", this, "/all");
+            }
             clientSocket.close();
         } catch (IOException e) {
             e.printStackTrace();
@@ -82,6 +84,20 @@ public class ClientHandler {
     }
 
     private synchronized void authentication() throws IOException {
+
+        Thread authKiller = new Thread(() -> {
+            try {
+                Thread.sleep(120000);
+            } catch (InterruptedException e) {
+                System.out.println("Auth succsessfull");
+            } finally {
+                System.out.println("Client disconnected by timeout");
+                closeConnection();
+            }
+        });
+
+        authKiller.start();
+
         while (true) {
             String message = in.readUTF();
             // "/auth login password"
@@ -93,6 +109,7 @@ public class ClientHandler {
                 if (username == null) {
                     sendMessage("/err " + "incorrect account data");
                 } else {
+                    authKiller.interrupt();
                     nickname = username;
                     sendMessage("/auth " + nickname);
                     networkServer.sendMessage(nickname + " connected", this, "/all");

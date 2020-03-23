@@ -23,7 +23,7 @@ public class BaseAuthService implements AuthService {
         USER_DATA.add(new UserData("login2", "pass2", "username2"));
         USER_DATA.add(new UserData("login3", "pass3", "username3"));
         USER_DATA.add(new UserData("root", "admin", "Admin"));
-        USER_DATA.add(new UserData("belka  ", "belkapass", "Belka-Skret"));
+        USER_DATA.add(new UserData("belka", "belkapass", "Belka-Skret"));
         USER_DATA.add(new UserData("alex", "alexpass", "Revoc"));
         USER_DATA.add(new UserData("jackwizard", "jackwizardpass", "JackWizard"));
     }

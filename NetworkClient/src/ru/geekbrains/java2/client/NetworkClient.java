@@ -1,19 +1,29 @@
 package ru.geekbrains.java2.client;
 
 import ru.geekbrains.java2.client.controller.ClientController;
-import ru.geekbrains.java2.client.model.NetworkService;
-import ru.geekbrains.java2.client.view.AuthDialog;
+import javafx.application.Application;
+import javafx.stage.Stage;
 
 import java.io.IOException;
 
-public class NetworkClient {
+public class NetworkClient extends Application {
+
+    private final String DEFAULT_ADDR = "18.224.34.237";
+    private final int DEFAULT_PORT= 8189;
 
     public static void main(String[] args) {
+        launch(args);
+    }
+
+    @Override
+    public void start(Stage primaryStage) {
+
         try {
-            ClientController clientController = new ClientController("localhost", 8189);
+            ClientController clientController = new ClientController(DEFAULT_ADDR, DEFAULT_PORT, primaryStage);
             clientController.runApplication();
         } catch (IOException e) {
             System.err.println("Failed to connect to server! Please, check you network settings");
         }
+
     }
 }

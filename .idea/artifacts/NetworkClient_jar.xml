@@ -1,0 +1,8 @@
+<component name="ArtifactManager">
+  <artifact type="jar" build-on-make="true" name="NetworkClient:jar">
+    <output-path>$PROJECT_DIR$/out/artifacts/NetworkClient_jar</output-path>
+    <root id="archive" name="NetworkClient.jar">
+      <element id="module-output" name="NetworkClient" />
+    </root>
+  </artifact>
+</component>

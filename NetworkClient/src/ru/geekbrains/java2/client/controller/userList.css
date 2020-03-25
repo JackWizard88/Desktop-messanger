@@ -1,0 +1,20 @@
+#userListField {
+
+    .list-cell:odd {
+        -fx-background-color: #fafafa;
+    }
+
+    .list-cell:even {
+        -fx-background-color: #fafafa;
+    }
+
+    .list-view:focused .list-cell:focused:odd {
+               -fx-background-color: #16aade;
+               -fx-control-inner-background: #F4F4F4;
+           }
+
+    .list-view:focused .list-cell:focused:even {
+               -fx-background-color: #16aade;
+               -fx-control-inner-background: #F4F4F4;
+
+           }

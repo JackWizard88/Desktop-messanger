@@ -1,5 +1,6 @@
 package ru.geekbrains.java2.server.auth;
 
+import java.util.ArrayList;
 import java.util.List;
 
 public class BaseAuthService implements AuthService {
@@ -16,12 +17,16 @@ public class BaseAuthService implements AuthService {
         }
     }
 
-    private static final List<UserData> USER_DATA = List.of(
-            new UserData("login1", "pass1", "username1"),
-            new UserData("login2", "pass2", "username2"),
-            new UserData("login3", "pass3", "username3"),
-            new UserData("root", "admin", "Admin")
-    );
+    private static List<UserData> USER_DATA = new ArrayList<>();
+    {
+        USER_DATA.add(new UserData("login1", "pass1", "username1"));
+        USER_DATA.add(new UserData("login2", "pass2", "username2"));
+        USER_DATA.add(new UserData("login3", "pass3", "username3"));
+        USER_DATA.add(new UserData("root", "admin", "Admin"));
+        USER_DATA.add(new UserData("belka  ", "belkapass", "Belka-Skret"));
+        USER_DATA.add(new UserData("alex", "alexpass", "Revoc"));
+        USER_DATA.add(new UserData("jackwizard", "jackwizardpass", "JackWizard"));
+    }
 
     @Override
     public String getUsernameByLoginAndPassword(String login, String password) {
@@ -35,11 +40,11 @@ public class BaseAuthService implements AuthService {
 
     @Override
     public void start() {
-        System.out.println("Сервис аутентификации запущен");
+        System.out.println("Auth service started");
     }
 
     @Override
     public void stop() {
-        System.out.println("Сервис аутентификации оставлен");
+        System.out.println("Auth service stopped");
     }
 }

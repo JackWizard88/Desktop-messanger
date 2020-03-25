@@ -1,12 +1,15 @@
 package ru.geekbrains.java2.client.model;
 
 import ru.geekbrains.java2.client.controller.AuthEvent;
+import ru.geekbrains.java2.client.controller.fxview.FxChatWindow;
 
+import javax.swing.*;
 import java.io.DataInputStream;
 import java.io.DataOutputStream;
 import java.io.IOException;
 import java.net.Socket;
-import java.util.function.Consumer;
+import java.util.ArrayList;
+import java.util.List;
 
 public class NetworkService {
 
@@ -15,10 +18,10 @@ public class NetworkService {
     private Socket socket;
     private DataInputStream in;
     private DataOutputStream out;
-
-    private Consumer<String> messageHandler;
+    private FxChatWindow curentWindow;
     private AuthEvent successfulAuthEvent;
     private String nickname;
+    private List<String> userlist = new ArrayList<>();
 
     public NetworkService(String host, int port) {
         this.host = host;
@@ -42,11 +45,35 @@ public class NetworkService {
                         nickname = messageParts[1];
                         successfulAuthEvent.authIsSuccessful(nickname);
                     }
-                    else if (messageHandler != null) {
-                        messageHandler.accept(message);
+                    else if(message.startsWith("/err")) {
+                        String[] messageParts = message.split("\\s+", 2);
+                        String errMsg = messageParts[1];
+                        JOptionPane.showMessageDialog(null, errMsg);
                     }
+                    else if (message.startsWith("/userList")) {
+                        String[] messageParts = message.split("\\s+", 3);
+                        String event = messageParts[1];
+                        String data = messageParts[2];
+                        while (curentWindow == null) {
+                            try {
+                                Thread.sleep(100);
+                            } catch (InterruptedException e) {
+                                e.printStackTrace();
+                            }
+                        }
+                        if (event.equals("add")) {
+                            userlist.add(data);
+                            curentWindow.updateUserListField(userlist);
+                        } else if (event.equals("remove")) {
+                            userlist.remove(data);
+                            curentWindow.updateUserListField(userlist);
+                        } else if (event.equals("clear")) {
+                            userlist.clear();
+                        }
+                    }
+                    else curentWindow.appendMessage(message);
                 } catch (IOException e) {
-                    System.out.println("Поток чтения был прерван!");
+                    System.out.println("ReadThread was interrupted");
                     return;
                 }
             }
@@ -61,8 +88,8 @@ public class NetworkService {
         out.writeUTF(message);
     }
 
-    public void setMessageHandler(Consumer<String> messageHandler) {
-        this.messageHandler = messageHandler;
+    public void setCurentWindow(FxChatWindow curentWindow) {
+        this.curentWindow = curentWindow;
     }
 
     public void setSuccessfulAuthEvent(AuthEvent successfulAuthEvent) {

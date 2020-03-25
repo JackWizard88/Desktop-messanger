@@ -37,7 +37,7 @@ public class ClientHandler {
                     authentication();
                     readMessages();
                 } catch (IOException e) {
-                    System.out.println("Соединение с клиентом " + nickname + " было закрыто!");
+                    System.out.println("Connection with " + nickname + " was closed!");
                 } finally {
                     closeConnection();
                 }
@@ -49,8 +49,9 @@ public class ClientHandler {
     }
 
     private void closeConnection() {
-        networkServer.unsubscribe(this);
         try {
+            networkServer.unsubscribe(this);
+            networkServer.sendMessage(nickname + " disconnected", this, "/all");
             clientSocket.close();
         } catch (IOException e) {
             e.printStackTrace();
@@ -69,9 +70,9 @@ public class ClientHandler {
                 String toNickname = messageParts[1];
                 String messageText = messageParts[2];
                 System.out.printf("private message from %s to %s: %s%n", nickname, toNickname, messageText);
-                networkServer.sendMessage("личное сообщение от " + nickname + ": " + messageText, this, toNickname);
+                networkServer.sendMessage("private from " + nickname + ": " + messageText, this, toNickname);
             } else {
-                System.out.printf("Всем от %s: %s%n", nickname, message);
+                System.out.printf("To all from %s: %s%n", nickname, message);
                 if ("/end".equals(message)) {
                     return;
                 }
@@ -80,7 +81,7 @@ public class ClientHandler {
         }
     }
 
-    private void authentication() throws IOException {
+    private synchronized void authentication() throws IOException {
         while (true) {
             String message = in.readUTF();
             // "/auth login password"
@@ -90,11 +91,11 @@ public class ClientHandler {
                 String password = messageParts[2];
                 String username = networkServer.getAuthService().getUsernameByLoginAndPassword(login, password);
                 if (username == null) {
-                    sendMessage("Отсутствует учетная запись по данному логину и паролю!");
+                    sendMessage("/err " + "incorrect account data");
                 } else {
                     nickname = username;
-                    networkServer.sendMessage(nickname + " зашел в чат!", this, "/all");
                     sendMessage("/auth " + nickname);
+                    networkServer.sendMessage(nickname + " connected", this, "/all");
                     networkServer.subscribe(this);
                     break;
                 }

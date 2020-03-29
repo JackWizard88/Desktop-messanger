@@ -1,41 +1,70 @@
 package ru.geekbrains.java2.server.auth;
 
-import java.util.ArrayList;
-import java.util.List;
+import java.sql.*;
 
 public class BaseAuthService implements AuthService {
 
-    private static class UserData {
-        private String login;
-        private String password;
-        private String username;
+    private static Connection sqlconnection;
 
-        public UserData(String login, String password, String username) {
-            this.login = login;
-            this.password = password;
-            this.username = username;
+    public static void connectSQL() throws SQLException {
+        try {
+            Class.forName("org.sqlite.JDBC");
+            sqlconnection = DriverManager.getConnection("jdbc:sqlite:userDB.db");
+        } catch (ClassNotFoundException e) {
+            e.printStackTrace();
         }
-    }
-
-    private static List<UserData> USER_DATA = new ArrayList<>();
-    {
-        USER_DATA.add(new UserData("login1", "pass1", "username1"));
-        USER_DATA.add(new UserData("login2", "pass2", "username2"));
-        USER_DATA.add(new UserData("login3", "pass3", "username3"));
-        USER_DATA.add(new UserData("root", "admin", "Admin"));
-        USER_DATA.add(new UserData("belka", "belkapass", "Belka-Skret"));
-        USER_DATA.add(new UserData("alex", "alexpass", "Revoc"));
-        USER_DATA.add(new UserData("jackwizard", "jackwizardpass", "JackWizard"));
     }
 
     @Override
-    public String getUsernameByLoginAndPassword(String login, String password) {
-        for (UserData userDatum : USER_DATA) {
-            if (userDatum.login.equals(login) && userDatum.password.equals(password)) {
-                return userDatum.username;
+    public synchronized void changeNickName(String username, String newNickname) {
+        try {
+            connectSQL();
+            String sql = "UPDATE userData SET Username = ? WHERE Login = ?";
+            PreparedStatement statement = sqlconnection.prepareStatement( sql );
+            System.out.println(username + " " + newNickname);
+            statement.setString( 1, newNickname);
+            statement.setString( 2, username);
+            statement.execute();
+
+        } catch (SQLException e) {
+            e.printStackTrace();
+        } finally {
+            try {
+                sqlconnection.close();
+            } catch (SQLException e) {
+                e.printStackTrace();
             }
         }
-        return null;
+    }
+
+    @Override
+    public synchronized String getUsernameByLoginAndPassword(String login, String password) {
+
+        String username = null;
+
+        try {
+            connectSQL();
+            String sql = "SELECT * FROM userData WHERE Login = ?";
+            PreparedStatement statement = sqlconnection.prepareStatement( sql );
+            statement.setString( 1, login);
+
+            ResultSet rs = statement.executeQuery();
+
+            if (rs.getString(4).equals(password)) {
+                username = rs.getString(2);
+            }
+
+        } catch (SQLException e) {
+            e.printStackTrace();
+        } finally {
+            try {
+                sqlconnection.close();
+            } catch (SQLException e) {
+                e.printStackTrace();
+            }
+        }
+
+        return username;
     }
 
     @Override

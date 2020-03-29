@@ -5,6 +5,8 @@ import javafx.fxml.FXML;
 import javafx.scene.control.*;
 import javafx.scene.input.KeyCode;
 import ru.geekbrains.java2.client.controller.ClientController;
+
+import javax.swing.*;
 import java.util.List;
 
 public class FxChatWindow {
@@ -29,6 +31,9 @@ public class FxChatWindow {
 
     @FXML
     private MenuItem chatClearButton;
+
+    @FXML
+    private MenuItem chatChangeNickButton;
     
     @FXML
     void initialize() {
@@ -39,12 +44,22 @@ public class FxChatWindow {
         //отправка сообщений и очистка чата
         sendButton.setOnAction(e -> sendMessage(inputTextField.getText()));
         chatClearButton.setOnAction(e -> chatTextField.setText(""));
+        chatChangeNickButton.setOnAction(e -> changeNickname());
         inputTextField.setOnKeyPressed(keyEvent -> {
             if (keyEvent.getCode() == KeyCode.ENTER)  {
                 sendMessage(inputTextField.getText());
             }
         });
     }
+
+    private void changeNickname() {
+        String newNick = JOptionPane.showInputDialog(null, "Введите новый ник: ");
+        if (newNick != null) {
+            clientController.sendMessage("/newNick " + clientController.getUsername() + " " + newNick);
+            clientController.getPrimaryStage().setTitle(newNick + " via JackMessenger");
+        }
+    }
+
     //метод отправки сообщений
     private void sendMessage(String msg) {
         if (!msg.trim().isEmpty()) {

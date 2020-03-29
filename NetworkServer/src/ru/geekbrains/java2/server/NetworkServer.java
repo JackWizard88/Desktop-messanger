@@ -77,4 +77,11 @@ public class NetworkServer {
         }
     }
 
+    public synchronized void changeNickname(String oldNick, String newNick) throws IOException {
+            for (ClientHandler client : clients) {
+                client.sendMessage("/userList" + " remove " + oldNick);
+                client.sendMessage("/userList" + " add " + newNick);
+            }
+    }
+
 }

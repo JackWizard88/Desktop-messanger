@@ -53,6 +53,8 @@ public class FxAuthDialog {
         } catch (IOException e) {
             JOptionPane.showMessageDialog(null, "Ошибка при попытке аутентификации");
         }
+
+        clientController.setUsername(login);
     }
 
     private void onCancel() {

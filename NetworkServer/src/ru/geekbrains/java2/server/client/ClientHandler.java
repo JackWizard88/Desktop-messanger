@@ -73,11 +73,16 @@ public class ClientHandler {
                 String messageText = messageParts[2];
                 System.out.printf("private message from %s to %s: %s%n", nickname, toNickname, messageText);
                 networkServer.sendMessage("private from " + nickname + ": " + messageText, this, toNickname);
+            } else if (message.startsWith("/newNick")) {
+                String[] messageParts = message.split("\\s+", 3);
+                String login = messageParts[1];
+                String newNickname = messageParts[2];
+                networkServer.getAuthService().changeNickName(login, newNickname);
+                networkServer.sendMessage(nickname + " changed name to " + newNickname, null, "/all");
+                networkServer.changeNickname(nickname, newNickname);
+                nickname = newNickname;
             } else {
                 System.out.printf("To all from %s: %s%n", nickname, message);
-                if ("/end".equals(message)) {
-                    return;
-                }
                 networkServer.sendMessage(nickname + ": " + message, this, "/all");
             }
         }
@@ -88,11 +93,10 @@ public class ClientHandler {
         Thread authKiller = new Thread(() -> {
             try {
                 Thread.sleep(120000);
-            } catch (InterruptedException e) {
-                System.out.println("Auth succsessfull");
-            } finally {
                 System.out.println("Client disconnected by timeout");
                 closeConnection();
+            } catch (InterruptedException e) {
+                System.out.println("Auth successful");
             }
         });
 

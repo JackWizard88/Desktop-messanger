@@ -17,7 +17,15 @@ public class ClientController {
     private Stage primaryStage;
     private Parent rootChat;
     private String nickname;
+    private String username;
 
+    public Stage getPrimaryStage() {
+        return primaryStage;
+    }
+
+    public void setUsername(String username) {
+        this.username = username;
+    }
 
     public ClientController(String serverHost, int serverPort, Stage primaryStage) {
         this.networkService = new NetworkService(serverHost, serverPort);
@@ -105,6 +113,6 @@ public class ClientController {
     }
 
     public String getUsername() {
-        return nickname;
+        return username;
     }
 }

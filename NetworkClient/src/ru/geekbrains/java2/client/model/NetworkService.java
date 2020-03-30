@@ -2,7 +2,6 @@ package ru.geekbrains.java2.client.model;
 
 import ru.geekbrains.java2.client.controller.AuthEvent;
 import ru.geekbrains.java2.client.controller.fxview.FxChatWindow;
-
 import javax.swing.*;
 import java.io.DataInputStream;
 import java.io.DataOutputStream;

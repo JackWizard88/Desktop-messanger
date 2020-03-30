@@ -5,7 +5,6 @@ import javafx.fxml.FXML;
 import javafx.scene.control.*;
 import javafx.scene.input.KeyCode;
 import ru.geekbrains.java2.client.controller.ClientController;
-
 import javax.swing.*;
 import java.util.List;
 

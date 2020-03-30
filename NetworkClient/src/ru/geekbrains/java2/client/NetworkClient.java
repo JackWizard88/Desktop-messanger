@@ -3,7 +3,6 @@ package ru.geekbrains.java2.client;
 import ru.geekbrains.java2.client.controller.ClientController;
 import javafx.application.Application;
 import javafx.stage.Stage;
-
 import java.io.IOException;
 
 public class NetworkClient extends Application {

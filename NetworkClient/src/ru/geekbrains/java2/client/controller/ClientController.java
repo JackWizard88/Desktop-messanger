@@ -7,6 +7,7 @@ import javafx.scene.Scene;
 import javafx.stage.Stage;
 import ru.geekbrains.java2.client.controller.fxview.FxAuthDialog;
 import ru.geekbrains.java2.client.controller.fxview.FxChatWindow;
+import ru.geekbrains.java2.client.history.HistoryLogger;
 import ru.geekbrains.java2.client.model.NetworkService;
 import javax.swing.*;
 import java.io.IOException;
@@ -18,6 +19,11 @@ public class ClientController {
     private Parent rootChat;
     private String nickname;
     private String username;
+    private HistoryLogger history;
+
+    public HistoryLogger getHistoryLogger() {
+        return history;
+    }
 
     public Stage getPrimaryStage() {
         return primaryStage;
@@ -54,6 +60,7 @@ public class ClientController {
         FxAuthDialog authDialog  = loaderAuth.getController();
         authDialog.setClientController(this);
 
+
         Scene scene = new Scene(rootChat, 300, 200);
         primaryStage.setTitle("LogIn Messenger");
         primaryStage.setScene(scene);
@@ -65,9 +72,12 @@ public class ClientController {
 
     private void openChat() {
         FXMLLoader loaderChat = new FXMLLoader();
+
         try {
             rootChat = loaderChat.load(getClass().getResourceAsStream("fxview/FxChatWindow.fxml"));
             FxChatWindow clientChat  = loaderChat.getController();
+            history = new HistoryLogger(username, clientChat);
+            networkService.setCurentWindow(clientChat);
             clientChat.setClientController(this);
             Scene scene = new Scene(rootChat, 600, 400);
             scene.getStylesheets().add(getClass().getResource("userList.css").toExternalForm());
@@ -76,7 +86,7 @@ public class ClientController {
             primaryStage.setMinHeight(200);
             primaryStage.setMinWidth(400);
             primaryStage.show();
-            networkService.setCurentWindow(clientChat);
+            clientChat.getClientController().getHistoryLogger().RetrieveHistory();
         } catch (IOException e) {
             e.printStackTrace();
         }
@@ -106,10 +116,6 @@ public class ClientController {
             JOptionPane.showMessageDialog(null, "Failed to send message!");
             e.printStackTrace();
         }
-    }
-
-    public void shutdown() {
-        networkService.close();
     }
 
     public String getUsername() {

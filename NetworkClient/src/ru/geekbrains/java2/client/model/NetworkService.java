@@ -43,13 +43,11 @@ public class NetworkService {
                         String[] messageParts = message.split("\\s+", 2);
                         nickname = messageParts[1];
                         successfulAuthEvent.authIsSuccessful(nickname);
-                    }
-                    else if(message.startsWith("/err")) {
+                    } else if(message.startsWith("/err")) {
                         String[] messageParts = message.split("\\s+", 2);
                         String errMsg = messageParts[1];
                         JOptionPane.showMessageDialog(null, errMsg);
-                    }
-                    else if (message.startsWith("/userList")) {
+                    } else if (message.startsWith("/userList")) {
                         String[] messageParts = message.split("\\s+", 3);
                         String event = messageParts[1];
                         String data = messageParts[2];
@@ -69,8 +67,10 @@ public class NetworkService {
                         } else if (event.equals("clear")) {
                             userlist.clear();
                         }
+                    } else {
+                        curentWindow.appendMessage(message);
+                        curentWindow.getClientController().getHistoryLogger().SaveHistory(message + "\n");
                     }
-                    else curentWindow.appendMessage(message);
                 } catch (IOException e) {
                     System.out.println("ReadThread was interrupted");
                     return;

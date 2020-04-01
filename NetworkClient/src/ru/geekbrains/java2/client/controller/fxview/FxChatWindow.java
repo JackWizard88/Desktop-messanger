@@ -6,6 +6,8 @@ import javafx.scene.control.*;
 import javafx.scene.input.KeyCode;
 import ru.geekbrains.java2.client.controller.ClientController;
 import javax.swing.*;
+import java.text.SimpleDateFormat;
+import java.util.Date;
 import java.util.List;
 
 public class FxChatWindow {
@@ -15,6 +17,11 @@ public class FxChatWindow {
     public void setClientController(ClientController clientController) {
         this.clientController = clientController;
     }
+
+    public ClientController getClientController() {
+        return clientController;
+    }
+
 
     @FXML
     private TextArea chatTextField;
@@ -33,6 +40,11 @@ public class FxChatWindow {
 
     @FXML
     private MenuItem chatChangeNickButton;
+
+    @FXML
+    private MenuItem chatClearHistoryButton;
+
+
     
     @FXML
     void initialize() {
@@ -41,8 +53,12 @@ public class FxChatWindow {
         //перенос строк
         chatTextField.setWrapText(true);
         //отправка сообщений и очистка чата
+        chatClearHistoryButton.setOnAction(e -> {
+            clientController.getHistoryLogger().clearHistory();
+            chatTextField.clear();
+        });
         sendButton.setOnAction(e -> sendMessage(inputTextField.getText()));
-        chatClearButton.setOnAction(e -> chatTextField.setText(""));
+        chatClearButton.setOnAction(e -> chatTextField.clear());
         chatChangeNickButton.setOnAction(e -> changeNickname());
         inputTextField.setOnKeyPressed(keyEvent -> {
             if (keyEvent.getCode() == KeyCode.ENTER)  {
@@ -62,7 +78,12 @@ public class FxChatWindow {
     //метод отправки сообщений
     private void sendMessage(String msg) {
         if (!msg.trim().isEmpty()) {
-            chatTextField.appendText("Я: " + msg + "\n");
+            Date dateNow = new Date();
+            SimpleDateFormat formatForDateNow = new SimpleDateFormat("HH:mm:ss");
+            String time = "[" + formatForDateNow.format(dateNow) + "} ";
+            String message = time + "Я: " + msg + "\n";
+            chatTextField.appendText(message);
+            clientController.getHistoryLogger().SaveHistory(message);
             clientController.sendMessage(msg);
         }
         inputTextField.clear();

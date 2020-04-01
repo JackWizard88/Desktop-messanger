@@ -21,7 +21,7 @@ public class BaseAuthService implements AuthService {
         try {
             String sql = "UPDATE userData SET Username = ? WHERE Login = ?";
             PreparedStatement statement = sqlconnection.prepareStatement( sql );
-            System.out.println(username + " " + newNickname);
+            System.out.println(username + " changed name to " + newNickname);
             statement.setString( 1, newNickname);
             statement.setString( 2, username);
             statement.execute();
@@ -36,7 +36,6 @@ public class BaseAuthService implements AuthService {
         String username = null;
 
         try {
-            connectSQL();
             String sql = "SELECT * FROM userData WHERE Login = ?";
             PreparedStatement statement = sqlconnection.prepareStatement( sql );
             statement.setString( 1, login);
@@ -48,7 +47,7 @@ public class BaseAuthService implements AuthService {
             }
 
         } catch (SQLException e) {
-            e.printStackTrace();
+            System.err.println("Invalid auth data. Auth refused");
         }
         return username;
     }

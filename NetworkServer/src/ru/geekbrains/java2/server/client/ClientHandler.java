@@ -21,6 +21,7 @@ public class ClientHandler {
     private DataOutputStream out;
 
     private String nickname;
+    private String login;
 
     public ClientHandler(NetworkServer networkServer, Socket socket) {
         this.networkServer = networkServer;
@@ -56,6 +57,7 @@ public class ClientHandler {
         try {
             if (nickname != null) {
                 networkServer.unsubscribe(this);
+                networkServer.getAuthService().logOut(login);
                 networkServer.sendMessage(nickname + " disconnected", this, "/all");
             }
             clientSocket.close();
@@ -108,6 +110,8 @@ public class ClientHandler {
                 "ебну",
                 "ебол",
                 "ебош",
+                "муда",
+                "мудо",
                 "ебал",
                 "ебат",
                 "ебуч",
@@ -173,6 +177,7 @@ public class ClientHandler {
                 if (username == null) {
                     sendMessage("/err " + "incorrect account data");
                 } else {
+                    this.login = login;
                     authKiller.interrupt();
                     nickname = username;
                     sendMessage("/auth " + nickname);

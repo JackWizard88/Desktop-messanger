@@ -31,6 +31,18 @@ public class BaseAuthService implements AuthService {
     }
 
     @Override
+    public void logOut(String login) {
+        try {
+            String sql2 = "UPDATE userData SET Logged = false WHERE Login = ?";
+            PreparedStatement statement2 = sqlconnection.prepareStatement(sql2);
+            statement2.setString( 1, login);
+            statement2.execute();
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+    }
+
+    @Override
     public synchronized String getUsernameByLoginAndPassword(String login, String password) {
 
         String username = null;
@@ -42,8 +54,13 @@ public class BaseAuthService implements AuthService {
 
             ResultSet rs = statement.executeQuery();
 
-            if (rs.getString(4).equals(password)) {
+            if (rs.getString(4).equals(password) && !rs.getBoolean(5)) {
                 username = rs.getString(2);
+                String sql1 = "UPDATE userData SET Logged = true WHERE Login = ?";
+                PreparedStatement statement1 = sqlconnection.prepareStatement(sql1);
+                statement1.setString( 1, login);
+                statement1.execute();
+
             }
 
         } catch (SQLException e) {

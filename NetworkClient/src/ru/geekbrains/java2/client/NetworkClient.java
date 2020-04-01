@@ -7,7 +7,7 @@ import java.io.IOException;
 
 public class NetworkClient extends Application {
 
-    private final String DEFAULT_ADDR = "3.133.142.67";
+    private final String DEFAULT_ADDR = "localhost";
     private final int DEFAULT_PORT= 8189;
 
     public static void main(String[] args) {

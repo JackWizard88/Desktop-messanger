@@ -8,4 +8,5 @@ public interface AuthService {
     void stop();
 
     void changeNickName(String login, String newNickname);
+    void logOut(String login);
 }

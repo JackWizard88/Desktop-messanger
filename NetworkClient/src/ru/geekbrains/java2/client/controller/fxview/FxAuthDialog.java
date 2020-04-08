@@ -46,15 +46,19 @@ public class FxAuthDialog {
     }
 
     private void onOK() {
+
         String login = loginText.getText().trim();
         String pass = passwordText.getText().trim();
-        try {
-            clientController.sendAuthMessage(login, pass);
-        } catch (IOException e) {
-            JOptionPane.showMessageDialog(null, "Ошибка при попытке аутентификации");
-        }
 
-        clientController.setUsername(login);
+        if (!loginText.getText().trim().isEmpty() && !passwordText.getText().trim().isEmpty()) {
+            try {
+                clientController.sendAuthMessage(login, pass);
+            } catch (IOException e) {
+                JOptionPane.showMessageDialog(null, "Ошибка аутентификации. Проверьте данные");
+            }
+
+            clientController.setUsername(login);
+        }
     }
 
     private void onCancel() {

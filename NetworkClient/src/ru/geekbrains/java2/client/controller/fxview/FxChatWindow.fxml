@@ -9,12 +9,12 @@
             <children>
                 <AnchorPane scaleShape="false" AnchorPane.bottomAnchor="30.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
                     <children>
-                        <TextArea fx:id="chatTextField" editable="false" prefWidth="397.0" AnchorPane.bottomAnchor="1.0" AnchorPane.leftAnchor="1.0" AnchorPane.rightAnchor="2.0" AnchorPane.topAnchor="2.0" />
+                        <TextArea fx:id="chatTextField" editable="false" layoutX="-39.0" prefHeight="342.0" prefWidth="438.0" AnchorPane.bottomAnchor="1.0" AnchorPane.leftAnchor="-38.0" AnchorPane.rightAnchor="2.0" AnchorPane.topAnchor="2.0" />
                     </children>
                 </AnchorPane>
                 <AnchorPane AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0">
                     <children>
-                        <TextField fx:id="inputTextField" prefWidth="315.0" promptText="Message" AnchorPane.bottomAnchor="2.0" AnchorPane.leftAnchor="1.0" AnchorPane.rightAnchor="85.0" AnchorPane.topAnchor="1.0" />
+                        <TextField fx:id="inputTextField" layoutX="-39.0" prefHeight="25.0" prefWidth="355.0" promptText="Message" AnchorPane.bottomAnchor="2.0" AnchorPane.leftAnchor="-38.0" AnchorPane.rightAnchor="85.0" AnchorPane.topAnchor="1.0" />
                         <Button fx:id="sendButton" layoutX="327.0" layoutY="7.0" mnemonicParsing="false" prefWidth="80.0" text="Отправить" AnchorPane.bottomAnchor="2.0" AnchorPane.rightAnchor="2.0" AnchorPane.topAnchor="1.0" />
                     </children>
                 </AnchorPane>
@@ -24,7 +24,7 @@
     <left>
         <AnchorPane>
             <children>
-                <ListView fx:id="userListField" prefWidth="196.0" AnchorPane.bottomAnchor="2.0" AnchorPane.leftAnchor="2.0" AnchorPane.rightAnchor="1.0" AnchorPane.topAnchor="1.0" />
+                <ListView fx:id="userListField" prefHeight="372.0" prefWidth="155.0" AnchorPane.bottomAnchor="2.0" AnchorPane.leftAnchor="2.0" AnchorPane.rightAnchor="40.0" AnchorPane.topAnchor="2.0" />
 
             </children>
         </AnchorPane>
@@ -36,6 +36,7 @@
                     <items>
                         <MenuItem fx:id="chatClearButton" mnemonicParsing="false" text="Очистить чат" />
                         <MenuItem fx:id="chatChangeNickButton" mnemonicParsing="false" text="Изменить никнейм" />
+                        <MenuItem fx:id="chatClearHistoryButton" mnemonicParsing="false" text="Очистить историю" />
                     </items>
                 </Menu>
             </menus>

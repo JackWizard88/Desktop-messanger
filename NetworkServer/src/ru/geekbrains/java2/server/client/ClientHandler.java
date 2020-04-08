@@ -7,6 +7,10 @@ import java.io.DataInputStream;
 import java.io.DataOutputStream;
 import java.io.IOException;
 import java.net.Socket;
+import java.text.SimpleDateFormat;
+import java.util.Date;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 public class ClientHandler {
 
@@ -17,6 +21,7 @@ public class ClientHandler {
     private DataOutputStream out;
 
     private String nickname;
+    private String login;
 
     public ClientHandler(NetworkServer networkServer, Socket socket) {
         this.networkServer = networkServer;
@@ -52,6 +57,7 @@ public class ClientHandler {
         try {
             if (nickname != null) {
                 networkServer.unsubscribe(this);
+                networkServer.getAuthService().logOut(login);
                 networkServer.sendMessage(nickname + " disconnected", this, "/all");
             }
             clientSocket.close();
@@ -71,21 +77,79 @@ public class ClientHandler {
                 String[] messageParts = message.split("\\s+", 3);
                 String toNickname = messageParts[1];
                 String messageText = messageParts[2];
-                System.out.printf("private message from %s to %s: %s%n", nickname, toNickname, messageText);
+                //System.out.printf("private message from %s to %s: %s%n", nickname, toNickname, messageText);
                 networkServer.sendMessage("private from " + nickname + ": " + messageText, this, toNickname);
             } else if (message.startsWith("/newNick")) {
                 String[] messageParts = message.split("\\s+", 3);
                 String login = messageParts[1];
                 String newNickname = messageParts[2];
                 networkServer.getAuthService().changeNickName(login, newNickname);
-                networkServer.sendMessage(nickname + " changed name to " + newNickname, null, "/all");
+                networkServer.sendMessage(getTime() + nickname + " changed name to " + newNickname, null, "/all");
                 networkServer.changeNickname(nickname, newNickname);
                 nickname = newNickname;
             } else {
-                System.out.printf("To all from %s: %s%n", nickname, message);
-                networkServer.sendMessage(nickname + ": " + message, this, "/all");
+                message = censorMessage(message);
+                networkServer.sendMessage(getTime() + nickname + ": " + message, this, "/all");
             }
         }
+    }
+
+    private String censorMessage(String message) {
+        final String[] forbidden = { "блядь",
+                "бля",
+                "выеб",
+                "гомо",
+                "долбо",
+                "ебло",
+                "ебли",
+                "ебать",
+                "ебич",
+                "ебуч",
+                "ебун",
+                "ебла",
+                "ебну",
+                "ебол",
+                "ебош",
+                "муда",
+                "мудо",
+                "ебал",
+                "ебат",
+                "ебуч",
+                "заёб",
+                "залуп",
+                "залупо",
+                "ебин",
+                "манда",
+                "мандо",
+                "ъеби",
+                "хуе",
+                "пизда",
+                "пидар",
+                "пидор",
+                "залуп",
+                "пизд",
+                "сука",
+                "сучка",
+                "трах",
+                "уебок",
+                "уебать",
+                "гондо",
+                "гандо",
+                "уебан",
+                "хуй",
+                "хуи",
+                "членосос",
+                "член",
+                "шлюх"};
+
+        for(int i = 0; i < forbidden.length; i++) {
+            Pattern pattern = Pattern.compile("(\\w*)" + forbidden[i] + "(\\w*)");
+            Matcher matcher = pattern.matcher(message);
+            message = matcher.replaceAll("***");
+        }
+        return message;
+
+
     }
 
     private synchronized void authentication() throws IOException {
@@ -113,10 +177,11 @@ public class ClientHandler {
                 if (username == null) {
                     sendMessage("/err " + "incorrect account data");
                 } else {
+                    this.login = login;
                     authKiller.interrupt();
                     nickname = username;
                     sendMessage("/auth " + nickname);
-                    networkServer.sendMessage(nickname + " connected", this, "/all");
+                    networkServer.sendMessage(getTime() + nickname + " connected", this, "/all");
                     networkServer.subscribe(this);
                     break;
                 }
@@ -126,5 +191,11 @@ public class ClientHandler {
 
     public void sendMessage(String message) throws IOException {
         out.writeUTF(message);
+    }
+
+    private String getTime() {
+        Date dateNow = new Date();
+        SimpleDateFormat formatForDateNow = new SimpleDateFormat("HH:mm:ss");
+        return "[" + formatForDateNow.format(dateNow) + "] ";
     }
 }

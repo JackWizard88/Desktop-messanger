@@ -15,6 +15,7 @@ public class Car implements Runnable {
     private CyclicBarrier cbStart;
     private CountDownLatch cdlStart, cdlFinish;
     private long startTime;
+    private static volatile boolean winner = false;
 
     public String getFinishTime() {
         return finishTime;
@@ -55,6 +56,12 @@ public class Car implements Runnable {
         for (int i = 0; i < race.getStages().size(); i++) {
             race.getStages().get(i).go(this);
         }
+
+        if (!winner) {
+            winner = true;
+            System.out.println(this.getName() + " - Winner!!");
+        }
+
         long raceTime = System.currentTimeMillis() - this.startTime;
         finishTime = String.format("Время заедза %s: %s мс\n", this.getName(), raceTime);
         cdlFinish.countDown();  //декремент счетчика защелки Финиша

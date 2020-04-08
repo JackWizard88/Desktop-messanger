@@ -1,14 +1,14 @@
 package ru.geekbrains.java2.server.client;
 
 import ru.geekbrains.java2.server.NetworkServer;
-
-
 import java.io.DataInputStream;
 import java.io.DataOutputStream;
 import java.io.IOException;
 import java.net.Socket;
 import java.text.SimpleDateFormat;
 import java.util.Date;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -22,6 +22,8 @@ public class ClientHandler {
 
     private String nickname;
     private String login;
+
+    private ExecutorService executorService = Executors.newFixedThreadPool(1);
 
     public ClientHandler(NetworkServer networkServer, Socket socket) {
         this.networkServer = networkServer;
@@ -37,7 +39,7 @@ public class ClientHandler {
             in = new DataInputStream(socket.getInputStream());
             out = new DataOutputStream(socket.getOutputStream());
 
-            new Thread(() -> {
+            executorService.execute(() -> {
                 try {
                     authentication();
                     readMessages();
@@ -46,7 +48,7 @@ public class ClientHandler {
                 } finally {
                     closeConnection();
                 }
-            }).start();
+            });
 
         } catch (IOException e) {
             e.printStackTrace();
@@ -59,6 +61,7 @@ public class ClientHandler {
                 networkServer.unsubscribe(this);
                 networkServer.getAuthService().logOut(login);
                 networkServer.sendMessage(nickname + " disconnected", this, "/all");
+                executorService.shutdown();
             }
             clientSocket.close();
         } catch (IOException e) {

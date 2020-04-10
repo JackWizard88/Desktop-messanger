@@ -4,18 +4,26 @@ import java.util.concurrent.*;
 
 public class MainClass {
 
-    public static final int CARS_COUNT = 5000;
+    public static final int CARS_COUNT = 10;
     public static final int TUNNEL_CAPACITY = CARS_COUNT / 2;
 
     public static void main(String[] args) {
 
         ExecutorService executor = Executors.newFixedThreadPool(CARS_COUNT);
-        CyclicBarrier cbStart = new CyclicBarrier(CARS_COUNT);              //Барьер для метода подготовки к гонкам
-        final CountDownLatch cdlStart = new CountDownLatch(CARS_COUNT);    //защелка для мейнПотока на Старт
-        final CountDownLatch cdlFinish = new CountDownLatch(CARS_COUNT);  //защелка для мейнПотока на Финиш
-        final Semaphore smp = new Semaphore(TUNNEL_CAPACITY, true);  //семафор для тоннеля проходимость TUNNEL_CAPACITY, в порядке очереди
+        CyclicBarrier cbStart = new CyclicBarrier(CARS_COUNT + 1);    //Барьер для метода подготовки к гонкам
+        CountDownLatch cdlStart = new CountDownLatch(CARS_COUNT);    //защелка для мейнПотока на Старт
+        CountDownLatch cdlFinish = new CountDownLatch(CARS_COUNT);  //защелка для мейнПотока на Финиш
+        Semaphore smp = new Semaphore(TUNNEL_CAPACITY, true);  //семафор для тоннеля проходимость TUNNEL_CAPACITY, в порядке очереди
 
-        System.out.println("ВАЖНОЕ ОБЪЯВЛЕНИЕ >>> Подготовка!!!");
+        race(executor, cbStart, cdlStart, cdlFinish, smp);
+
+        //закрываем экзекьютор
+        executor.shutdown();
+
+    }
+
+    private static void race(Executor executor, CyclicBarrier cbStart, CountDownLatch cdlStart, CountDownLatch cdlFinish, Semaphore smp) {
+        System.err.println("ОБЪЯВЛЕНИЕ >>> ПОДГОТОВКА К ГОНКЕ <<< ОБЪЯВЛЕНИЕ");
         Race race = new Race(new Road(60), new Tunnel(80, smp), new Road(40));
         Car[] cars = new Car[CARS_COUNT];
         for (int i = 0; i < cars.length; i++) {
@@ -26,20 +34,22 @@ public class MainClass {
             executor.execute(car);
         }
 
-        wait(cdlStart); // ждем пока все 4 участника подготовятся
-        System.out.println("ВАЖНОЕ ОБЪЯВЛЕНИЕ >>> Гонка началась!!!");
+        wait(cdlStart); // ждем пока все участники подготовятся
+        System.err.println("ОБЪЯВЛЕНИЕ >>> ГОНКА НАЧАЛАСЬ <<< ОБЪЯВЛЕНИЕ");
 
-        wait(cdlFinish); //ждем пока все 4 участника финишируют
-        System.out.println("ВАЖНОЕ ОБЪЯВЛЕНИЕ >>> Гонка закончилась!!!");
+        try {
+            cbStart.await();
+        } catch (InterruptedException | BrokenBarrierException e) {
+            e.printStackTrace();
+        }
+
+        wait(cdlFinish); //ждем пока все участники финишируют
+        System.err.println("ОБЪЯВЛЕНИЕ >>> ГОНКА ЗАКОНЧИЛАСЬ <<< ОБЪЯВЛЕНИЕ");
 
         //время заезда участников в мс
         for (Car car: cars) {
             System.out.print(car.getFinishTime());
         }
-
-        //закрываем экзекьютор
-        executor.shutdown();
-
     }
 
     //метод ожидания защелки

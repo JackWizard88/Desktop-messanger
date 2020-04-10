@@ -53,13 +53,16 @@ public class Car implements Runnable {
         } catch (Exception e) {
             e.printStackTrace();
         }
+
         for (int i = 0; i < race.getStages().size(); i++) {
             race.getStages().get(i).go(this);
         }
-
-        if (!winner) {
-            winner = true;
-            System.out.println(this.getName() + " - Winner!!");
+        
+        synchronized (this) {
+            if (!winner) {
+                winner = true;
+                System.err.println(this.getName() + " >>> WINNER <<<");
+            }
         }
 
         long raceTime = System.currentTimeMillis() - this.startTime;

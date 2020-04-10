@@ -9,12 +9,12 @@ public class Car implements Runnable {
     static {
         CARS_COUNT = 0;
     }
-    private Race race;
-    private int speed;
-    private String name;
-    private CyclicBarrier cbStart;
-    private CountDownLatch cdlStart, cdlFinish;
-    private long startTime;
+    private final Race race;
+    private final int speed;
+    private final String name;
+    private final CyclicBarrier cbStart;
+    private final CountDownLatch cdlStart, cdlFinish;
+    private final long startTime;
     private static volatile boolean winner = false;
 
     public String getFinishTime() {

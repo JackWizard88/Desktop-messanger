@@ -4,14 +4,14 @@ import java.util.concurrent.*;
 
 public class MainClass {
 
-    public static final int CARS_COUNT = 100;
+    public static final int CARS_COUNT = 5000;
     public static final int TUNNEL_CAPACITY = CARS_COUNT / 2;
 
     public static void main(String[] args) {
 
         ExecutorService executor = Executors.newFixedThreadPool(CARS_COUNT);
         CyclicBarrier cbStart = new CyclicBarrier(CARS_COUNT);              //Барьер для метода подготовки к гонкам
-        final CountDownLatch cdlStart = new CountDownLatch(CARS_COUNT);   //защелка для мейнПотока на Старт
+        final CountDownLatch cdlStart = new CountDownLatch(CARS_COUNT);    //защелка для мейнПотока на Старт
         final CountDownLatch cdlFinish = new CountDownLatch(CARS_COUNT);  //защелка для мейнПотока на Финиш
         final Semaphore smp = new Semaphore(TUNNEL_CAPACITY, true);  //семафор для тоннеля проходимость TUNNEL_CAPACITY, в порядке очереди
 
@@ -22,8 +22,8 @@ public class MainClass {
             cars[i] = new Car(race, 20 + (int) (Math.random() * 10), cbStart, cdlStart, cdlFinish);
         }
 
-        for (int i = 0; i < cars.length; i++) {
-            executor.execute(cars[i]);
+        for (Car car : cars) {
+            executor.execute(car);
         }
 
         wait(cdlStart); // ждем пока все 4 участника подготовятся
@@ -41,7 +41,6 @@ public class MainClass {
         executor.shutdown();
 
     }
-
 
     //метод ожидания защелки
     private static void wait(CountDownLatch cdl) {

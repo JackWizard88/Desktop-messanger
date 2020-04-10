@@ -4,7 +4,7 @@ import java.util.concurrent.Semaphore;
 
 public class Tunnel extends Stage {
 
-    private Semaphore smp;
+    private final Semaphore smp;
 
     public Tunnel(int length, Semaphore smp) {
         this.length = length;

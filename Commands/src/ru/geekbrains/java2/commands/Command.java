@@ -46,26 +46,26 @@ public class Command implements Serializable {
             return command;
         }
 
-        public static Command messageCommand(String username, String message) {
+        public static Command messageCommand(String username, String message, String acceptor) {
             Command command = new Command();
             command.type = CTypeEnum.MESSAGE;
-            command.data = new MessageCommand(username, message);
+            command.data = new MessageCommand(username, message, acceptor);
             return command;
         }
 
-        public static Command broadcastMessageCommand(String message) {
-            Command command = new Command();
-            command.type = CTypeEnum.BROADCAST_MESSAGE;
-            command.data = new BroadcastMessageCommand(message);
-            return command;
-        }
-
-        public static Command privateMessageCommand(String receiver, String message) {
-            Command command = new Command();
-            command.type = CTypeEnum.PRIVATE_MESSAGE;
-            command.data = new PrivateMessageCommand(receiver, message);
-            return command;
-        }
+//        public static Command broadcastMessageCommand(String message) {
+//            Command command = new Command();
+//            command.type = CTypeEnum.BROADCAST_MESSAGE;
+//            command.data = new BroadcastMessageCommand(message);
+//            return command;
+//        }
+//
+//        public static Command privateMessageCommand(String receiver, String message) {
+//            Command command = new Command();
+//            command.type = CTypeEnum.PRIVATE_MESSAGE;
+//            command.data = new PrivateMessageCommand(receiver, message);
+//            return command;
+//        }
 
         public static Command updateUsersListCommand(List<String> users) {
             Command command = new Command();

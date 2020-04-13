@@ -9,17 +9,34 @@ import ru.geekbrains.java2.client.controller.fxview.FxAuthDialog;
 import ru.geekbrains.java2.client.controller.fxview.FxChatWindow;
 import ru.geekbrains.java2.client.history.HistoryLogger;
 import ru.geekbrains.java2.client.model.NetworkService;
-import javax.swing.*;
 import java.io.IOException;
+
+import static ru.geekbrains.java2.commands.Command.*;
 
 public class ClientController {
 
     private final NetworkService networkService;
     private Stage primaryStage;
     private Parent rootChat;
+
+    public String getNickname() {
+        return nickname;
+    }
+
     private String nickname;
     private String username;
     private HistoryLogger history;
+
+    public FxAuthDialog getAuthDialog() {
+        return authDialog;
+    }
+
+    public FxChatWindow getClientChat() {
+        return clientChat;
+    }
+
+    private FxAuthDialog authDialog;
+    private FxChatWindow clientChat;
 
     public HistoryLogger getHistoryLogger() {
         return history;
@@ -36,6 +53,8 @@ public class ClientController {
     public ClientController(String serverHost, int serverPort, Stage primaryStage) {
         this.networkService = new NetworkService(serverHost, serverPort);
         this.primaryStage = primaryStage;
+        this.authDialog = new FxAuthDialog();
+        this.clientChat = new FxChatWindow();
     }
 
     public void runApplication() throws IOException {
@@ -57,7 +76,7 @@ public class ClientController {
         } catch (IOException e) {
             e.printStackTrace();
         }
-        FxAuthDialog authDialog  = loaderAuth.getController();
+        authDialog  = loaderAuth.getController();
         authDialog.setClientController(this);
 
 
@@ -75,7 +94,7 @@ public class ClientController {
 
         try {
             rootChat = loaderChat.load(getClass().getResourceAsStream("fxview/FxChatWindow.fxml"));
-            FxChatWindow clientChat  = loaderChat.getController();
+            clientChat  = loaderChat.getController();
             history = new HistoryLogger(username, clientChat);
             networkService.setCurentWindow(clientChat);
             clientChat.setClientController(this);
@@ -87,9 +106,15 @@ public class ClientController {
             primaryStage.setMinWidth(400);
             primaryStage.show();
             clientChat.getClientController().getHistoryLogger().RetrieveHistory();
+            authDialog = null;
         } catch (IOException e) {
             e.printStackTrace();
         }
+    }
+
+
+    public String getUsername() {
+        return username;
     }
 
     private void setUserName(String nickname) {
@@ -98,7 +123,7 @@ public class ClientController {
 
     private void connectToServer() throws IOException {
         try {
-            networkService.connect();
+            networkService.connect(this);
         } catch (IOException e) {
             System.err.println("Failed to establish server connection");
             throw e;
@@ -106,19 +131,33 @@ public class ClientController {
     }
 
     public void sendAuthMessage(String login, String pass) throws IOException {
-        networkService.sendAuthMessage(login, pass);
+        networkService.sendCommand(authCommand(login, pass));
     }
 
-    public void sendMessage(String message) {
+    public void sendMessage(String message, String acceptor) {
         try {
-            networkService.sendMessage(message);
+            networkService.sendCommand(messageCommand(nickname, message, acceptor));
         } catch (IOException e) {
-            JOptionPane.showMessageDialog(null, "Failed to send message!");
+            networkService.showError("Failed to send message!");
             e.printStackTrace();
         }
     }
 
-    public String getUsername() {
-        return username;
+    public void changeNick(String newNickname) {
+        try {
+            networkService.sendCommand(changeNicknameCommand(username, newNickname));
+        } catch (IOException e) {
+            networkService.showError("Failed to changeNickname!");
+            e.printStackTrace();
+        }
+    }
+
+    public void showErrorMessage(String errorMessage) {
+
+        if (authDialog != null) {
+            authDialog.showErrorMessage(errorMessage);
+        } else if (clientChat != null) {
+            clientChat.showErrorMessage(errorMessage);
+        }
     }
 }

@@ -54,17 +54,18 @@ public class BaseAuthService implements AuthService {
 
             ResultSet rs = statement.executeQuery();
 
-            if (rs.getString(4).equals(password) && !rs.getBoolean(5)) {
+            if (rs.getBoolean(5)) return null;
+            else if (rs.getString(4).equals(password)) {
                 username = rs.getString(2);
                 String sql1 = "UPDATE userData SET Logged = true WHERE Login = ?";
                 PreparedStatement statement1 = sqlconnection.prepareStatement(sql1);
                 statement1.setString( 1, login);
                 statement1.execute();
-
             }
 
         } catch (SQLException e) {
             System.err.println("Invalid auth data. Auth refused");
+
         }
         return username;
     }
@@ -73,6 +74,9 @@ public class BaseAuthService implements AuthService {
     public void start() {
         try {
             connectSQL();
+            String sql2 = "UPDATE userData SET Logged = 0";
+            Statement statement = sqlconnection.createStatement();
+            statement.execute(sql2);
             System.out.println("UserData successfully connected");
         } catch (SQLException e) {
             System.out.println("Error while reading UserData database");
@@ -82,6 +86,8 @@ public class BaseAuthService implements AuthService {
 
     @Override
     public void stop() {
+
+
         try {
             sqlconnection.close();
         } catch (SQLException e) {

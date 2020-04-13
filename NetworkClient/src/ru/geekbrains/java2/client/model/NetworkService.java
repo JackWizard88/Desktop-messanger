@@ -1,13 +1,17 @@
 package ru.geekbrains.java2.client.model;
 
+import javafx.application.Platform;
 import ru.geekbrains.java2.client.controller.AuthEvent;
+import ru.geekbrains.java2.client.controller.ClientController;
+import ru.geekbrains.java2.client.controller.fxview.FxAuthDialog;
 import ru.geekbrains.java2.client.controller.fxview.FxChatWindow;
-import javax.swing.*;
-import java.io.DataInputStream;
-import java.io.DataOutputStream;
-import java.io.IOException;
+import ru.geekbrains.java2.commands.Command;
+import ru.geekbrains.java2.commands.command.AuthCommand;
+import ru.geekbrains.java2.commands.command.ErrorCommand;
+import ru.geekbrains.java2.commands.command.MessageCommand;
+import ru.geekbrains.java2.commands.command.UpdateUsersListCommand;
+import java.io.*;
 import java.net.Socket;
-import java.util.ArrayList;
 import java.util.List;
 
 public class NetworkService {
@@ -15,22 +19,22 @@ public class NetworkService {
     private final String host;
     private final int port;
     private Socket socket;
-    private DataInputStream in;
-    private DataOutputStream out;
+    private ObjectInputStream in;
+    private ObjectOutputStream out;
     private FxChatWindow curentWindow;
     private AuthEvent successfulAuthEvent;
     private String nickname;
-    private List<String> userlist = new ArrayList<>();
-
+    private ClientController controller;
     public NetworkService(String host, int port) {
         this.host = host;
         this.port = port;
     }
 
-    public void connect() throws IOException {
+    public void connect(ClientController controller) throws IOException {
+        this.controller = controller;
         socket = new Socket(host, port);
-        in = new DataInputStream(socket.getInputStream());
-        out = new DataOutputStream(socket.getOutputStream());
+        out = new ObjectOutputStream(socket.getOutputStream());
+        in = new ObjectInputStream(socket.getInputStream());
         runReadThread();
     }
 
@@ -38,54 +42,59 @@ public class NetworkService {
         new Thread(() -> {
             while (true) {
                 try {
-                    String message = in.readUTF();
-                    if (message.startsWith("/auth")) {
-                        String[] messageParts = message.split("\\s+", 2);
-                        nickname = messageParts[1];
-                        successfulAuthEvent.authIsSuccessful(nickname);
-                    } else if(message.startsWith("/err")) {
-                        String[] messageParts = message.split("\\s+", 2);
-                        String errMsg = messageParts[1];
-                        JOptionPane.showMessageDialog(null, errMsg);
-                    } else if (message.startsWith("/userList")) {
-                        String[] messageParts = message.split("\\s+", 3);
-                        String event = messageParts[1];
-                        String data = messageParts[2];
-                        while (curentWindow == null) {
-                            try {
-                                Thread.sleep(100);
-                            } catch (InterruptedException e) {
-                                e.printStackTrace();
+                    Command command = (Command) in.readObject();
+                    switch (command.getType()) {
+                        case AUTH: {
+                            AuthCommand commandData = (AuthCommand) command.getData();
+                            nickname = commandData.getUsername();
+                            successfulAuthEvent.authIsSuccessful(nickname);
+                            break;
+                        }
+                        case MESSAGE: {
+                            MessageCommand commandData = (MessageCommand) command.getData();
+                            if (curentWindow != null) {
+                                String message = commandData.getMessage();
+                                curentWindow.appendMessage(message);
+                                curentWindow.getClientController().getHistoryLogger().SaveHistory(message + "\n");
                             }
+                            break;
                         }
-                        if (event.equals("add")) {
-                            userlist.add(data);
-                            curentWindow.updateUserListField(userlist);
-                        } else if (event.equals("remove")) {
-                            userlist.remove(data);
-                            curentWindow.updateUserListField(userlist);
-                        } else if (event.equals("clear")) {
-                            userlist.clear();
+                        case ERROR: {
+                            if (controller.getAuthDialog() != null || controller.getClientChat() != null) {
+                                ErrorCommand commandData = (ErrorCommand) command.getData();
+                                showError(commandData.getErrorMessage());
+                            }
+                            break;
                         }
-                    } else {
-                        curentWindow.appendMessage(message);
-                        curentWindow.getClientController().getHistoryLogger().SaveHistory(message + "\n");
+                        case UPDATE_USERS_LIST: {
+                            UpdateUsersListCommand commandData = (UpdateUsersListCommand) command.getData();
+                            List<String> users = commandData.getUsers();
+
+                            Platform.runLater(
+                                    () -> {
+                                        curentWindow.updateUsersList(users);
+                                    }
+                            );
+                            break;
+                        }
+                        default:
+                            System.err.println("Unknown type of command: " + command.getType());
                     }
                 } catch (IOException e) {
-                    System.out.println("ReadThread was interrupted");
+                    System.out.println("ReadThread interrupted!");
+                    close();
                     return;
+                } catch (ClassNotFoundException e) {
+                    e.printStackTrace();
                 }
             }
         }).start();
     }
 
-    public void sendAuthMessage(String login, String password) throws IOException {
-        out.writeUTF(String.format("/auth %s %s", login, password));
+    public void sendCommand(Command command) throws IOException {
+        out.writeObject(command);
     }
 
-    public void sendMessage(String message) throws IOException {
-        out.writeUTF(message);
-    }
 
     public void setCurentWindow(FxChatWindow curentWindow) {
         this.curentWindow = curentWindow;
@@ -101,5 +110,9 @@ public class NetworkService {
         } catch (IOException e) {
             e.printStackTrace();
         }
+    }
+
+    public void showError(String errorMessage) {
+        controller.showErrorMessage(errorMessage);
     }
 }

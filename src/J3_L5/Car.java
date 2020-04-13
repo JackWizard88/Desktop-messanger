@@ -61,7 +61,7 @@ public class Car implements Runnable {
         synchronized (this) {
             if (!winner) {
                 winner = true;
-                System.err.println(this.getName() + " >>> WINNER <<<");
+                System.out.println(this.getName() + " >>> WINNER <<<");
             }
         }
 

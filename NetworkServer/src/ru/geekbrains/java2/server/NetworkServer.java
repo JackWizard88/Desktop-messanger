@@ -1,5 +1,6 @@
 package ru.geekbrains.java2.server;
 
+import ru.geekbrains.java2.commands.Command;
 import ru.geekbrains.java2.server.auth.AuthService;
 import ru.geekbrains.java2.server.auth.BaseAuthService;
 import ru.geekbrains.java2.server.client.ClientHandler;
@@ -8,6 +9,7 @@ import java.io.IOException;
 import java.net.ServerSocket;
 import java.net.Socket;
 import java.util.ArrayList;
+import java.util.LinkedList;
 import java.util.List;
 
 public class NetworkServer {
@@ -48,11 +50,12 @@ public class NetworkServer {
         return authService;
     }
 
-    public synchronized void sendMessage(String message, ClientHandler owner, String acceptor) throws IOException {
+    public synchronized void sendMessage(ClientHandler owner, String receiver, Command message) throws IOException {
+
         for (ClientHandler client : clients) {
-            if (acceptor.equals("/all")) {
+            if (receiver.equals("all")) {
                 if (client != owner) client.sendMessage(message);
-            } else if (client != owner && client.getNickname().equals(acceptor)) {
+            } else if (client.getNickname().equals(receiver)) {
                 client.sendMessage(message);
             }
         }
@@ -60,28 +63,25 @@ public class NetworkServer {
 
     public synchronized void subscribe(ClientHandler clientHandler) throws IOException {
         clients.add(clientHandler);
-        for (ClientHandler client : clients) {
-            client.sendMessage("/userList" + " clear all");
-            for (ClientHandler client1 : clients) {
-                client.sendMessage("/userList" + " " + "add" + " " + client1.getNickname());
-            }
-        }
+        updateUserList();
     }
 
     public synchronized void unsubscribe(ClientHandler clientHandler) throws IOException {
         clients.remove(clientHandler);
-        if (!clients.isEmpty()) {
-            for (ClientHandler client : clients) {
-                client.sendMessage("/userList" + " remove " + clientHandler.getNickname());
-            }
-        }
+        updateUserList();
     }
 
-    public synchronized void changeNickname(String oldNick, String newNick) throws IOException {
-            for (ClientHandler client : clients) {
-                client.sendMessage("/userList" + " remove " + oldNick);
-                client.sendMessage("/userList" + " add " + newNick);
-            }
+    private List<String> getAllUsernames() {
+        List<String> usernames = new LinkedList<>();
+        for (ClientHandler clientHandler : clients) {
+            usernames.add(clientHandler.getNickname());
+        }
+        return usernames;
+    }
+
+    public synchronized void updateUserList() throws IOException {
+        List<String> users = getAllUsernames();
+        sendMessage(null, "all", Command.updateUsersListCommand(users));
     }
 
 }

@@ -1,9 +1,12 @@
 package ru.geekbrains.java2.server.client;
 
+import ru.geekbrains.java2.commands.CTypeEnum;
+import ru.geekbrains.java2.commands.Command;
+import ru.geekbrains.java2.commands.command.AuthCommand;
+import ru.geekbrains.java2.commands.command.ChangeNicknameCommand;
+import ru.geekbrains.java2.commands.command.MessageCommand;
 import ru.geekbrains.java2.server.NetworkServer;
-import java.io.DataInputStream;
-import java.io.DataOutputStream;
-import java.io.IOException;
+import java.io.*;
 import java.net.Socket;
 import java.text.SimpleDateFormat;
 import java.util.Date;
@@ -17,8 +20,8 @@ public class ClientHandler {
     private final NetworkServer networkServer;
     private final Socket clientSocket;
 
-    private DataInputStream in;
-    private DataOutputStream out;
+    private ObjectInputStream in;
+    private ObjectOutputStream out;
 
     private String nickname;
     private String login;
@@ -36,13 +39,13 @@ public class ClientHandler {
 
     private void doHandle(Socket socket) {
         try {
-            in = new DataInputStream(socket.getInputStream());
-            out = new DataOutputStream(socket.getOutputStream());
+            in = new ObjectInputStream(socket.getInputStream());
+            out = new ObjectOutputStream(socket.getOutputStream());
 
             executorService.execute(() -> {
                 try {
                     authentication();
-                    readMessages();
+                    readData();
                 } catch (IOException e) {
                     System.out.println("Connection with " + nickname + " was closed!");
                 } finally {
@@ -55,12 +58,54 @@ public class ClientHandler {
         }
     }
 
+    private void readData() throws IOException {
+        while (true) {
+            Command command = readCommand();
+            if (command == null) {
+                continue;
+            }
+            switch (command.getType()) {
+                case MESSAGE: {
+                    MessageCommand commandData = (MessageCommand) command.getData();
+                    String receiver = commandData.getReceiver();
+                    String message = String.format("%s %s: %s", getTime(), getNickname(), commandData.getMessage());
+                    networkServer.sendMessage(this, receiver, Command.messageCommand(nickname, message, receiver));
+                    break;
+                }
+                case CHANGE_NICKNAME: {
+                    ChangeNicknameCommand commandData = (ChangeNicknameCommand) command.getData();
+                    String login = commandData.getLogin();
+                    nickname = commandData.getUsername();
+                    networkServer.getAuthService().changeNickName(login, nickname);
+                    networkServer.updateUserList();
+                    break;
+                }
+                default:
+                    System.err.println("Unknown type of command : " + command.getType());
+            }
+        }
+    }
+
+    private Command readCommand() throws IOException {
+        try {
+            return (Command) in.readObject();
+        } catch (ClassNotFoundException e) {
+            String errorMessage = "Unknown type of object from client!";
+            System.err.println(errorMessage);
+            e.printStackTrace();
+            sendMessage(Command.errorCommand(errorMessage));
+            return null;
+        }
+    }
+
     private void closeConnection() {
         try {
             if (nickname != null) {
                 networkServer.unsubscribe(this);
                 networkServer.getAuthService().logOut(login);
-                networkServer.sendMessage(nickname + " disconnected", this, "/all");
+                String message = getTime() + nickname + " disconnected";
+                String receiver = "all";
+                networkServer.sendMessage( this, receiver, Command.messageCommand(nickname, message, receiver));
                 executorService.shutdown();
             }
             clientSocket.close();
@@ -71,30 +116,6 @@ public class ClientHandler {
 
     public String getNickname() {
         return this.nickname;
-    }
-
-    private void readMessages() throws IOException {
-        while (true) {
-            String message = in.readUTF();
-            if (message.startsWith("/w")) {
-                String[] messageParts = message.split("\\s+", 3);
-                String toNickname = messageParts[1];
-                String messageText = messageParts[2];
-                //System.out.printf("private message from %s to %s: %s%n", nickname, toNickname, messageText);
-                networkServer.sendMessage("private from " + nickname + ": " + messageText, this, toNickname);
-            } else if (message.startsWith("/newNick")) {
-                String[] messageParts = message.split("\\s+", 3);
-                String login = messageParts[1];
-                String newNickname = messageParts[2];
-                networkServer.getAuthService().changeNickName(login, newNickname);
-                networkServer.sendMessage(getTime() + nickname + " changed name to " + newNickname, null, "/all");
-                networkServer.changeNickname(nickname, newNickname);
-                nickname = newNickname;
-            } else {
-                message = censorMessage(message);
-                networkServer.sendMessage(getTime() + nickname + ": " + message, this, "/all");
-            }
-        }
     }
 
     private String censorMessage(String message) {
@@ -170,30 +191,46 @@ public class ClientHandler {
         authKiller.start();
 
         while (true) {
-            String message = in.readUTF();
-            // "/auth login password"
-            if (message.startsWith("/auth")) {
-                String[] messageParts = message.split("\\s+", 3);
-                String login = messageParts[1];
-                String password = messageParts[2];
-                String username = networkServer.getAuthService().getUsernameByLoginAndPassword(login, password);
-                if (username == null) {
-                    sendMessage("/err " + "incorrect account data");
-                } else {
-                    this.login = login;
+            Command command = readCommand();
+            if (command == null) {
+                continue;
+            }
+            if (command.getType() == CTypeEnum.AUTH) {
+                boolean successfulAuth = processAuthCommand(command);
+                if (successfulAuth){
                     authKiller.interrupt();
-                    nickname = username;
-                    sendMessage("/auth " + nickname);
-                    networkServer.sendMessage(getTime() + nickname + " connected", this, "/all");
-                    networkServer.subscribe(this);
-                    break;
+                    return;
                 }
+            } else {
+                System.err.println("Unknown type of command for auth process: " + command.getType());
             }
         }
     }
 
-    public void sendMessage(String message) throws IOException {
-        out.writeUTF(message);
+    private boolean processAuthCommand(Command command) throws IOException {
+        AuthCommand commandData = (AuthCommand) command.getData();
+        login = commandData.getLogin();
+        String password = commandData.getPassword();
+        String username = networkServer.getAuthService().getUsernameByLoginAndPassword(login, password);
+        if (username == null) {
+            Command errorCommand = Command.errorCommand("Отсутствует учетная запись или пользователь уже в сети");
+            sendMessage(errorCommand);
+            return false;
+        }
+        else {
+            nickname = username;
+            String message = getTime() + nickname + " зашел в чат!";
+            String receiver = "all";
+            networkServer.sendMessage(this, receiver, Command.messageCommand(null, message, receiver));
+            commandData.setUsername(nickname);
+            sendMessage(command);
+            networkServer.subscribe(this);
+            return true;
+        }
+    }
+
+    public void sendMessage(Command command) throws IOException {
+        out.writeObject(command);
     }
 
     private String getTime() {

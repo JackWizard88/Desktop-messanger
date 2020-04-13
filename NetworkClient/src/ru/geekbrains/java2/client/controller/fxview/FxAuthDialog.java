@@ -2,14 +2,14 @@ package ru.geekbrains.java2.client.controller.fxview;
 
 import java.io.IOException;
 
+import javafx.application.Platform;
 import javafx.fxml.FXML;
+import javafx.scene.control.Alert;
 import javafx.scene.control.Button;
 import javafx.scene.control.PasswordField;
 import javafx.scene.control.TextField;
 import javafx.scene.input.KeyCode;
 import ru.geekbrains.java2.client.controller.ClientController;
-
-import javax.swing.*;
 
 public class FxAuthDialog {
 
@@ -34,6 +34,8 @@ public class FxAuthDialog {
     @FXML
     void initialize() {
 
+
+
         buttonOk.setOnAction(e -> onOK());
         buttonCancel.setOnAction(e -> onCancel());
 
@@ -54,7 +56,7 @@ public class FxAuthDialog {
             try {
                 clientController.sendAuthMessage(login, pass);
             } catch (IOException e) {
-                JOptionPane.showMessageDialog(null, "Ошибка аутентификации. Проверьте данные");
+                showErrorMessage("Ошибка аутентификации. Проверьте данные");
             }
 
             clientController.setUsername(login);
@@ -63,6 +65,16 @@ public class FxAuthDialog {
 
     private void onCancel() {
         System.exit(0);
+    }
+
+    public void showErrorMessage(String errorMessage) {
+        Platform.runLater(() ->{
+            Alert alert = new Alert(Alert.AlertType.ERROR);
+            alert.setTitle("ERROR");
+            alert.setHeaderText(null);
+            alert.setContentText(errorMessage);
+            alert.showAndWait();
+        });
     }
 
 }

@@ -1,5 +1,6 @@
 package ru.geekbrains.java2.client.controller.fxview;
 
+import javafx.application.Platform;
 import javafx.collections.FXCollections;
 import javafx.fxml.FXML;
 import javafx.scene.control.*;
@@ -10,9 +11,11 @@ import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.List;
 
-public class FxChatWindow {
+public class FxChatWindow implements Window {
     
     private ClientController clientController;
+
+    private String receiver = "all";
 
     public void setClientController(ClientController clientController) {
         this.clientController = clientController;
@@ -50,6 +53,14 @@ public class FxChatWindow {
     void initialize() {
 
         userListField.getSelectionModel().setSelectionMode(SelectionMode.SINGLE);
+
+        userListField.getSelectionModel().selectedItemProperty().addListener((observable, oldValue, newValue) -> {
+            String selected = userListField.getSelectionModel().getSelectedItem();
+            if (selected.equals(clientController.getNickname())) {
+                receiver = "all";
+            } else receiver = selected;
+        });
+
         //перенос строк
         chatTextField.setWrapText(true);
         //отправка сообщений и очистка чата
@@ -70,7 +81,7 @@ public class FxChatWindow {
     private void changeNickname() {
         String newNick = JOptionPane.showInputDialog(null, "Введите новый ник: ");
         if (newNick != null) {
-            clientController.sendMessage("/newNick " + clientController.getUsername() + " " + newNick);
+            clientController.changeNick(newNick);
             clientController.getPrimaryStage().setTitle(newNick + " via JackMessenger");
         }
     }
@@ -84,7 +95,7 @@ public class FxChatWindow {
             String message = time + "Я: " + msg + "\n";
             chatTextField.appendText(message);
             clientController.getHistoryLogger().SaveHistory(message);
-            clientController.sendMessage(msg);
+            clientController.sendMessage(msg, receiver);
         }
         inputTextField.clear();
     }
@@ -93,8 +104,17 @@ public class FxChatWindow {
         chatTextField.appendText(msg + "\n");
     }
 
-    public void updateUserListField(List<String> userlist) {
-        userListField.setItems(FXCollections.observableList(userlist));
+    public void updateUsersList(List<String> users) {
+        userListField.setItems(FXCollections.observableList(users));
     }
 
+    public void showErrorMessage(String errorMessage) {
+        Platform.runLater(() ->{
+            Alert alert = new Alert(Alert.AlertType.ERROR);
+            alert.setTitle("ERROR");
+            alert.setHeaderText(null);
+            alert.setContentText(errorMessage);
+            alert.showAndWait();
+        });
+    }
 }

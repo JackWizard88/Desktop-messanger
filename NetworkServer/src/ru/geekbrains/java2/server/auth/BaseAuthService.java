@@ -1,11 +1,16 @@
 package ru.geekbrains.java2.server.auth;
 
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
+import ru.geekbrains.java2.server.NetworkServer;
+
 import java.sql.*;
 
 public class BaseAuthService implements AuthService {
 
     private static Connection sqlconnection;
     private static final String USERDATA_DATABASE = "userDB.db" ;
+    private static final Logger logger = LogManager.getLogger(BaseAuthService.class);
 
     public static void connectSQL() throws SQLException {
         try {
@@ -64,6 +69,7 @@ public class BaseAuthService implements AuthService {
             }
 
         } catch (SQLException e) {
+//            logger.error("Invalid auth data. Auth refused");
             System.err.println("Invalid auth data. Auth refused");
 
         }
@@ -77,11 +83,14 @@ public class BaseAuthService implements AuthService {
             String sql2 = "UPDATE userData SET Logged = 0";
             Statement statement = sqlconnection.createStatement();
             statement.execute(sql2);
-            System.out.println("UserData successfully connected");
+            logger.info("UserData successfully connected");
+//            System.out.println("UserData successfully connected");
         } catch (SQLException e) {
-            System.out.println("Error while reading UserData database");
+            logger.error("Error while reading UserData database");
+//            System.out.println("Error while reading UserData database");
         }
-        System.out.println("Auth service started");
+        logger.info("Auth service started");
+//        System.out.println("Auth service started");
     }
 
     @Override
@@ -93,6 +102,7 @@ public class BaseAuthService implements AuthService {
         } catch (SQLException e) {
             e.printStackTrace();
         }
-        System.out.println("Auth service stopped");
+        logger.info("Auth service stopped");
+//        System.out.println("Auth service stopped");
     }
 }

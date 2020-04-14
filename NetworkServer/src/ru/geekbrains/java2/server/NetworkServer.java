@@ -1,10 +1,11 @@
 package ru.geekbrains.java2.server;
 
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import ru.geekbrains.java2.commands.Command;
 import ru.geekbrains.java2.server.auth.AuthService;
 import ru.geekbrains.java2.server.auth.BaseAuthService;
 import ru.geekbrains.java2.server.client.ClientHandler;
-
 import java.io.IOException;
 import java.net.ServerSocket;
 import java.net.Socket;
@@ -17,6 +18,7 @@ public class NetworkServer {
     private final int port;
     private final List<ClientHandler> clients = new ArrayList<>();
     private final AuthService authService;
+    private static final Logger logger = LogManager.getLogger(NetworkServer.class);
 
     public NetworkServer(int port) {
         this.port = port;
@@ -25,16 +27,20 @@ public class NetworkServer {
 
     public void start() {
         try (ServerSocket serverSocket = new ServerSocket(port)) {
-            System.out.println("Server started on port " + port);
+            logger.info("Server started on port " + port);
+//            System.out.println("Server started on port " + port);
             authService.start();
             while (true) {
-                System.out.println("Connection awaiting...");
+                logger.info("Connection awaiting...");
+//                System.out.println("Connection awaiting...");
                 Socket clientSocket = serverSocket.accept();
-                System.out.println("Client connected");
+                logger.info("Client connected");
+//                System.out.println("Client connected");
                 createClientHandler(clientSocket);
             }
         } catch (IOException e) {
-            System.out.println("Error");
+            logger.error("Error");
+//            System.out.println("Error");
             e.printStackTrace();
         } finally {
             authService.stop();

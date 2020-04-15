@@ -67,9 +67,7 @@ public class FxChatWindow implements Window {
             } else receiver = selected;
         });
 
-        //перенос строк
         chatTextField.setWrapText(true);
-        //отправка сообщений и очистка чата
         chatClearHistoryButton.setOnAction(e -> {
             clientController.getHistoryLogger().clearHistory();
             chatTextField.clear();
@@ -91,11 +89,10 @@ public class FxChatWindow implements Window {
     private void changeNickname() {
 
         TextInputDialog dialog = new TextInputDialog(clientController.getNickname());
-
         dialog.setTitle("Смена имени");
         dialog.setHeaderText("Введите новый никнейм:");
-        dialog.setContentText("Name:");
-
+        dialog.setResizable(false);
+        dialog.setGraphic(null);
         Optional<String> result = dialog.showAndWait();
 
 

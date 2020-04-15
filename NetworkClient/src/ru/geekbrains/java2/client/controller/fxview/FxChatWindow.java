@@ -6,10 +6,12 @@ import javafx.fxml.FXML;
 import javafx.scene.control.*;
 import javafx.scene.input.KeyCode;
 import ru.geekbrains.java2.client.controller.ClientController;
-import javax.swing.*;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.List;
+import java.util.Optional;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 public class FxChatWindow implements Window {
     
@@ -47,7 +49,11 @@ public class FxChatWindow implements Window {
     @FXML
     private MenuItem chatClearHistoryButton;
 
+    @FXML
+    private CheckMenuItem censoredCheckbox;
 
+    @FXML
+    private MenuItem exitButton;
     
     @FXML
     void initialize() {
@@ -69,8 +75,12 @@ public class FxChatWindow implements Window {
             chatTextField.clear();
         });
         sendButton.setOnAction(e -> sendMessage(inputTextField.getText()));
+
         chatClearButton.setOnAction(e -> chatTextField.clear());
         chatChangeNickButton.setOnAction(e -> changeNickname());
+
+        exitButton.setOnAction(e -> System.exit(0));
+
         inputTextField.setOnKeyPressed(keyEvent -> {
             if (keyEvent.getCode() == KeyCode.ENTER)  {
                 sendMessage(inputTextField.getText());
@@ -79,11 +89,21 @@ public class FxChatWindow implements Window {
     }
 
     private void changeNickname() {
-        String newNick = JOptionPane.showInputDialog(null, "Введите новый ник: ");
-        if (newNick != null) {
-            clientController.changeNick(newNick);
-            clientController.getPrimaryStage().setTitle(newNick + " via JackMessenger");
-        }
+
+        TextInputDialog dialog = new TextInputDialog(clientController.getNickname());
+
+        dialog.setTitle("Смена имени");
+        dialog.setHeaderText("Введите новый никнейм:");
+        dialog.setContentText("Name:");
+
+        Optional<String> result = dialog.showAndWait();
+
+
+        result.ifPresent(name -> {
+            clientController.changeNick(name);
+            clientController.getPrimaryStage().setTitle(name + " via JackMessenger");
+        });
+
     }
 
     //метод отправки сообщений
@@ -101,6 +121,9 @@ public class FxChatWindow implements Window {
     }
 
     public void appendMessage(String msg) {
+        if (censoredCheckbox.isSelected()) {
+            msg = censorMessage(msg);
+        }
         chatTextField.appendText(msg + "\n");
     }
 
@@ -116,5 +139,65 @@ public class FxChatWindow implements Window {
             alert.setContentText(errorMessage);
             alert.showAndWait();
         });
+    }
+
+    private String censorMessage(String message) {
+        final String[] forbidden = { "блядь",
+                "бля",
+                "выеб",
+                "гомо",
+                "долбо",
+                "ебло",
+                "ебли",
+                "ебать",
+                "ебич",
+                "ебуч",
+                "ебун",
+                "ебла",
+                "ебну",
+                "ебол",
+                "ебош",
+                " лох",
+                "лошар",
+                "муда",
+                "мудо",
+                "ебал",
+                "ебат",
+                "ебуч",
+                "заёб",
+                "залуп",
+                "залупо",
+                "ебин",
+                "манда",
+                "мандо",
+                "ъеби",
+                "хуе",
+                "пизда",
+                "пидар",
+                "пидор",
+                "залуп",
+                "пизд",
+                "сука",
+                "сучка",
+                "трах",
+                "уебок",
+                "уебать",
+                "гондо",
+                "гандо",
+                "уебан",
+                "хуй",
+                "хуи",
+                "членосос",
+                "член",
+                "шлюх"};
+
+        for(int i = 0; i < forbidden.length; i++) {
+            Pattern pattern = Pattern.compile("(\\w*)" + forbidden[i] + "(\\w*)");
+            Matcher matcher = pattern.matcher(message);
+            message = matcher.replaceAll("***");
+        }
+        return message;
+
+
     }
 }

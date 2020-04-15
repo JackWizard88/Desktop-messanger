@@ -14,8 +14,7 @@ import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
+
 
 public class ClientHandler {
 
@@ -122,64 +121,6 @@ public class ClientHandler {
 
     public String getNickname() {
         return this.nickname;
-    }
-
-    private String censorMessage(String message) {
-        final String[] forbidden = { "блядь",
-                "бля",
-                "выеб",
-                "гомо",
-                "долбо",
-                "ебло",
-                "ебли",
-                "ебать",
-                "ебич",
-                "ебуч",
-                "ебун",
-                "ебла",
-                "ебну",
-                "ебол",
-                "ебош",
-                "муда",
-                "мудо",
-                "ебал",
-                "ебат",
-                "ебуч",
-                "заёб",
-                "залуп",
-                "залупо",
-                "ебин",
-                "манда",
-                "мандо",
-                "ъеби",
-                "хуе",
-                "пизда",
-                "пидар",
-                "пидор",
-                "залуп",
-                "пизд",
-                "сука",
-                "сучка",
-                "трах",
-                "уебок",
-                "уебать",
-                "гондо",
-                "гандо",
-                "уебан",
-                "хуй",
-                "хуи",
-                "членосос",
-                "член",
-                "шлюх"};
-
-        for(int i = 0; i < forbidden.length; i++) {
-            Pattern pattern = Pattern.compile("(\\w*)" + forbidden[i] + "(\\w*)");
-            Matcher matcher = pattern.matcher(message);
-            message = matcher.replaceAll("***");
-        }
-        return message;
-
-
     }
 
     private synchronized void authentication() throws IOException {

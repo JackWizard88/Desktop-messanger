@@ -150,6 +150,7 @@ public class ClientController {
             networkService.showError("Failed to changeNickname!");
             e.printStackTrace();
         }
+        nickname = newNickname;
     }
 
     public void showErrorMessage(String errorMessage) {

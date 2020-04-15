@@ -1,5 +1,7 @@
 package ru.geekbrains.java2.client;
 
+import javafx.application.Platform;
+import javafx.scene.control.Alert;
 import ru.geekbrains.java2.client.controller.ClientController;
 import javafx.application.Application;
 import javafx.stage.Stage;
@@ -21,7 +23,17 @@ public class NetworkClient extends Application {
             ClientController clientController = new ClientController(DEFAULT_ADDR, DEFAULT_PORT, primaryStage);
             clientController.runApplication();
         } catch (IOException e) {
-            System.err.println("Failed to connect to server! Please, check you network settings");
+
+            String errorMessage = "Failed to connect to server! Please, check you network settings";
+            System.err.println(errorMessage);
+
+            Platform.runLater(() ->{
+                Alert alert = new Alert(Alert.AlertType.ERROR);
+                alert.setTitle("ERROR");
+                alert.setHeaderText(null);
+                alert.setContentText(errorMessage);
+                alert.showAndWait();
+            });
         }
 
     }

@@ -1,9 +1,18 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
-<?import javafx.scene.control.*?>
-<?import javafx.scene.layout.*?>
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.CheckMenuItem?>
+<?import javafx.scene.control.ListView?>
+<?import javafx.scene.control.Menu?>
+<?import javafx.scene.control.MenuBar?>
+<?import javafx.scene.control.MenuItem?>
+<?import javafx.scene.control.SeparatorMenuItem?>
+<?import javafx.scene.control.TextArea?>
+<?import javafx.scene.control.TextField?>
+<?import javafx.scene.layout.AnchorPane?>
+<?import javafx.scene.layout.BorderPane?>
 
-<BorderPane prefHeight="400.0" prefWidth="600.0" xmlns="http://javafx.com/javafx/10.0.2-internal" xmlns:fx="http://javafx.com/fxml/1" fx:controller="ru.geekbrains.java2.client.controller.fxview.FxChatWindow">
+<BorderPane prefHeight="400.0" prefWidth="600.0" xmlns="http://javafx.com/javafx/11.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="ru.geekbrains.java2.client.controller.fxview.FxChatWindow">
     <center>
         <AnchorPane>
             <children>
@@ -34,9 +43,16 @@
             <menus>
                 <Menu mnemonicParsing="false" text="Меню">
                     <items>
-                        <MenuItem fx:id="chatClearButton" mnemonicParsing="false" text="Очистить чат" />
                         <MenuItem fx:id="chatChangeNickButton" mnemonicParsing="false" text="Изменить никнейм" />
-                        <MenuItem fx:id="chatClearHistoryButton" mnemonicParsing="false" text="Очистить историю" />
+                        <CheckMenuItem fx:id="censoredCheckbox" mnemonicParsing="false" text="Цензура сообщений" />
+                  <Menu mnemonicParsing="false" text="Очистить...">
+                    <items>
+                              <MenuItem fx:id="chatClearButton" mnemonicParsing="false" text="окно чата" />
+                              <MenuItem fx:id="chatClearHistoryButton" mnemonicParsing="false" text="окно чата + историю" />
+                    </items>
+                  </Menu>
+                  <SeparatorMenuItem mnemonicParsing="false" />
+                  <MenuItem fx:id="exitButton" mnemonicParsing="false" text="Выход" />
                     </items>
                 </Menu>
             </menus>

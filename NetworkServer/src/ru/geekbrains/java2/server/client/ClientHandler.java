@@ -2,7 +2,6 @@ package ru.geekbrains.java2.server.client;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
-import ru.geekbrains.java2.commands.CTypeEnum;
 import ru.geekbrains.java2.commands.Command;
 import ru.geekbrains.java2.commands.command.AuthCommand;
 import ru.geekbrains.java2.commands.command.ChangeNicknameCommand;

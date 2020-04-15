@@ -16,7 +16,7 @@ import static ru.geekbrains.java2.commands.Command.*;
 public class ClientController {
 
     private final NetworkService networkService;
-    private Stage primaryStage;
+    private final Stage primaryStage;
     private Parent rootChat;
     private String nickname;
     private String username;
@@ -63,9 +63,7 @@ public class ClientController {
     private void runAuthProcess() {
         networkService.setSuccessfulAuthEvent(nickname -> {
             setUserName(nickname);
-            Platform.runLater(()->{
-                openChat();
-            });
+            Platform.runLater(this::openChat);
         });
 
         FXMLLoader loaderAuth = new FXMLLoader();
@@ -83,9 +81,7 @@ public class ClientController {
         primaryStage.setScene(scene);
         primaryStage.setResizable(false);
         primaryStage.show();
-        primaryStage.setOnCloseRequest(e->{
-            System.exit(0);
-        });
+        primaryStage.setOnCloseRequest(e-> System.exit(0));
     }
 
     private void openChat() {
@@ -109,11 +105,6 @@ public class ClientController {
         } catch (IOException e) {
             e.printStackTrace();
         }
-    }
-
-
-    public String getUsername() {
-        return username;
     }
 
     private void setUserName(String nickname) {

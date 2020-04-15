@@ -25,7 +25,4 @@ public class RegisterCommand implements Serializable {
         return username;
     }
 
-    public void setUsername(String username) {
-        this.username = username;
-    }
 }

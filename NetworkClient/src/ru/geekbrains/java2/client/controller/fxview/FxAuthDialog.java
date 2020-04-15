@@ -15,10 +15,9 @@ import javafx.scene.input.KeyCode;
 import javafx.stage.Stage;
 import ru.geekbrains.java2.client.controller.ClientController;
 
-public class FxAuthDialog {
+public class FxAuthDialog implements Window {
 
-    FxRegWindow fxRegWindow;
-
+    private FxRegWindow fxRegWindow;
     private ClientController clientController;
 
     public void setClientController(ClientController clientController) {
@@ -76,9 +75,7 @@ public class FxAuthDialog {
             secondaryStage.setResizable(false);
             fxRegWindow.setClientController(clientController);
             fxRegWindow.setStage(secondaryStage);
-            secondaryStage.setOnCloseRequest(e->{
-                fxRegWindow.closeRegWindow();
-            });
+            secondaryStage.setOnCloseRequest(e-> fxRegWindow.closeRegWindow());
             secondaryStage.showAndWait();
 
         } catch (IOException e) {

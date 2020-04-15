@@ -8,7 +8,7 @@ import ru.geekbrains.java2.client.controller.ClientController;
 
 import java.io.IOException;
 
-public class FxRegWindow {
+public class FxRegWindow implements Window {
 
     private ClientController clientController;
     private Stage stage;
@@ -82,6 +82,16 @@ public class FxRegWindow {
             alert.setTitle("ERROR");
             alert.setHeaderText(null);
             alert.setContentText(errorMessage);
+            alert.showAndWait();
+        });
+    }
+
+    public void showInfoMessage(String infoMessage) {
+        Platform.runLater(() ->{
+            Alert alert = new Alert(Alert.AlertType.INFORMATION);
+            alert.setTitle("INFORMATION");
+            alert.setHeaderText(null);
+            alert.setContentText(infoMessage);
             alert.showAndWait();
         });
     }

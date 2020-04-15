@@ -16,7 +16,6 @@ import java.util.regex.Pattern;
 public class FxChatWindow implements Window {
     
     private ClientController clientController;
-
     private String receiver = "all";
 
     public void setClientController(ClientController clientController) {
@@ -214,8 +213,8 @@ public class FxChatWindow implements Window {
                 "член",
                 "шлюх"};
 
-        for(int i = 0; i < forbidden.length; i++) {
-            Pattern pattern = Pattern.compile("(\\w*)" + forbidden[i] + "(\\w*)");
+        for (String s : forbidden) {
+            Pattern pattern = Pattern.compile("(\\w*)" + s + "(\\w*)");
             Matcher matcher = pattern.matcher(message);
             message = matcher.replaceAll("***");
         }

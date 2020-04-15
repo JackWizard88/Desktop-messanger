@@ -2,11 +2,11 @@ package ru.geekbrains.java2.server.client;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
-import ru.geekbrains.java2.commands.Command;
-import ru.geekbrains.java2.commands.command.AuthCommand;
-import ru.geekbrains.java2.commands.command.ChangeNicknameCommand;
-import ru.geekbrains.java2.commands.command.MessageCommand;
-import ru.geekbrains.java2.commands.command.RegisterCommand;
+import main.java.ru.geekbrains.java2.commands.Command;
+import main.java.ru.geekbrains.java2.commands.command.AuthCommand;
+import main.java.ru.geekbrains.java2.commands.command.ChangeNicknameCommand;
+import main.java.ru.geekbrains.java2.commands.command.MessageCommand;
+import main.java.ru.geekbrains.java2.commands.command.RegisterCommand;
 import ru.geekbrains.java2.server.NetworkServer;
 import java.io.*;
 import java.net.Socket;

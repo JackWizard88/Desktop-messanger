@@ -21,6 +21,8 @@ public class ClientController {
     private String nickname;
     private String username;
     private HistoryLogger history;
+    private FxAuthDialog authDialog;
+    private FxChatWindow clientChat;
 
     public String getNickname() {
         return nickname;
@@ -33,9 +35,6 @@ public class ClientController {
     public FxChatWindow getClientChat() {
         return clientChat;
     }
-
-    private FxAuthDialog authDialog;
-    private FxChatWindow clientChat;
 
     public HistoryLogger getHistoryLogger() {
         return history;
@@ -75,7 +74,7 @@ public class ClientController {
         } catch (IOException e) {
             e.printStackTrace();
         }
-        authDialog  = loaderAuth.getController();
+        authDialog = loaderAuth.getController();
         authDialog.setClientController(this);
 
 
@@ -104,8 +103,8 @@ public class ClientController {
             primaryStage.setScene(scene);
             primaryStage.setMinHeight(200);
             primaryStage.setMinWidth(400);
-            primaryStage.show();
             clientChat.getClientController().getHistoryLogger().RetrieveHistory();
+            primaryStage.show();
             authDialog = null;
         } catch (IOException e) {
             e.printStackTrace();
@@ -160,5 +159,18 @@ public class ClientController {
         } else if (clientChat != null) {
             clientChat.showErrorMessage(errorMessage);
         }
+    }
+
+    public void showInfoMessage(String infoMessage) {
+
+        if (authDialog != null) {
+            authDialog.showInfoMessage(infoMessage);
+        } else if (clientChat != null) {
+            clientChat.showInfoMessage(infoMessage);
+        }
+    }
+
+    public void sendRegMessage(String login, String password, String nickname) throws IOException {
+        networkService.sendCommand(registerCommand(login, password, nickname));
     }
 }

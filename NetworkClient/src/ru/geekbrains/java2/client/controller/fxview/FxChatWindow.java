@@ -41,6 +41,9 @@ public class FxChatWindow implements Window {
     private ListView<String> userListField;
 
     @FXML
+    private Label receiverLabel;
+
+    @FXML
     private MenuItem chatClearButton;
 
     @FXML
@@ -53,23 +56,21 @@ public class FxChatWindow implements Window {
     private CheckMenuItem censoredCheckbox;
 
     @FXML
-    private Button registrationButton;
-
-    @FXML
     private MenuItem exitButton;
     
     @FXML
     void initialize() {
 
         userListField.getSelectionModel().setSelectionMode(SelectionMode.SINGLE);
+        setReceiver();
 
-//TODO сделать лейбл отображения получателя в окне клиента
         userListField.getSelectionModel().selectedItemProperty().addListener((observable, oldValue, newValue) -> {
             String selected = userListField.getSelectionModel().getSelectedItem();
             if (selected != null) {
                 if (selected.equals(clientController.getNickname())) {
                     receiver = "all";
                 } else receiver = selected;
+                setReceiver();
             }
         });
 
@@ -91,11 +92,6 @@ public class FxChatWindow implements Window {
             }
         });
 
-
-//TODO сделать регистрацию
-//        registrationButton.setOnAction(e -> {
-//
-//        });
     }
 
     private void changeNickname() {
@@ -152,6 +148,20 @@ public class FxChatWindow implements Window {
             alert.setContentText(errorMessage);
             alert.showAndWait();
         });
+    }
+
+    public void showInfoMessage(String infoMessage) {
+        Platform.runLater(() ->{
+            Alert alert = new Alert(Alert.AlertType.INFORMATION);
+            alert.setTitle("INFORMATION");
+            alert.setHeaderText(null);
+            alert.setContentText(infoMessage);
+            alert.showAndWait();
+        });
+    }
+
+    private void setReceiver() {
+        receiverLabel.setText(String.format("to %s:", receiver.toUpperCase()));
     }
 
     private String censorMessage(String message) {

@@ -4,14 +4,20 @@ import java.io.IOException;
 
 import javafx.application.Platform;
 import javafx.fxml.FXML;
+import javafx.fxml.FXMLLoader;
+import javafx.scene.Parent;
+import javafx.scene.Scene;
 import javafx.scene.control.Alert;
 import javafx.scene.control.Button;
 import javafx.scene.control.PasswordField;
 import javafx.scene.control.TextField;
 import javafx.scene.input.KeyCode;
+import javafx.stage.Stage;
 import ru.geekbrains.java2.client.controller.ClientController;
 
 public class FxAuthDialog {
+
+    FxRegWindow fxRegWindow;
 
     private ClientController clientController;
 
@@ -32,9 +38,10 @@ public class FxAuthDialog {
     private Button buttonCancel;
 
     @FXML
+    private Button buttonRegister;
+
+    @FXML
     void initialize() {
-
-
 
         buttonOk.setOnAction(e -> onOK());
         buttonCancel.setOnAction(e -> onCancel());
@@ -45,6 +52,41 @@ public class FxAuthDialog {
             }
         });
 
+        buttonRegister.setOnAction(e -> registration());
+
+    }
+
+    private void registration() {
+        clientController.getPrimaryStage().hide();
+        openRegWindow();
+
+    }
+
+    private void openRegWindow() {
+        FXMLLoader loader = new FXMLLoader(getClass().getResource("FxRegWindow.fxml"));
+        Stage secondaryStage = new Stage();
+        Parent root;
+
+        try {
+            root = loader.load();
+            Scene scene = new Scene(root, 350, 250);
+            fxRegWindow = loader.getController();
+            secondaryStage.setTitle("Registration");
+            secondaryStage.setScene(scene);
+            secondaryStage.setResizable(false);
+            fxRegWindow.setClientController(clientController);
+            fxRegWindow.setStage(secondaryStage);
+            secondaryStage.setOnCloseRequest(e->{
+                fxRegWindow.closeRegWindow();
+            });
+            secondaryStage.showAndWait();
+
+        } catch (IOException e) {
+            e.printStackTrace();
+        } finally {
+            fxRegWindow = null;
+            clientController.getPrimaryStage().show();
+        }
     }
 
     private void onOK() {
@@ -73,6 +115,16 @@ public class FxAuthDialog {
             alert.setTitle("ERROR");
             alert.setHeaderText(null);
             alert.setContentText(errorMessage);
+            alert.showAndWait();
+        });
+    }
+
+    public void showInfoMessage(String infoMessage) {
+        Platform.runLater(() ->{
+            Alert alert = new Alert(Alert.AlertType.INFORMATION);
+            alert.setTitle("INFORMATION");
+            alert.setHeaderText(null);
+            alert.setContentText(infoMessage);
             alert.showAndWait();
         });
     }

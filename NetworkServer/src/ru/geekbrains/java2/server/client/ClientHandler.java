@@ -7,6 +7,7 @@ import ru.geekbrains.java2.commands.Command;
 import ru.geekbrains.java2.commands.command.AuthCommand;
 import ru.geekbrains.java2.commands.command.ChangeNicknameCommand;
 import ru.geekbrains.java2.commands.command.MessageCommand;
+import ru.geekbrains.java2.commands.command.RegisterCommand;
 import ru.geekbrains.java2.server.NetworkServer;
 import java.io.*;
 import java.net.Socket;
@@ -18,13 +19,14 @@ import java.util.concurrent.Executors;
 
 public class ClientHandler {
 
+    private final String BROADCAST_TAG = "all";
     private final NetworkServer networkServer;
     private final Socket clientSocket;
     private static final Logger logger = LogManager.getLogger(ClientHandler.class);
 
     private ObjectInputStream in;
     private ObjectOutputStream out;
-
+    private Thread authKiller;
     private String nickname;
     private String login;
 
@@ -46,13 +48,14 @@ public class ClientHandler {
 
             executorService.execute(() -> {
                 try {
-                    authentication();
+
+                    connectionTimeOutKiller();
                     readData();
                 } catch (IOException e) {
                     logger.info("Connection with " + nickname + " was closed!");
-//                    System.out.println("Connection with " + nickname + " was closed!");
                 } finally {
                     closeConnection();
+                    authKiller.interrupt();
                 }
             });
 
@@ -68,11 +71,16 @@ public class ClientHandler {
                 continue;
             }
             switch (command.getType()) {
+                case AUTH: {
+                    boolean successfulAuth = processAuthCommand(command);
+                    if (successfulAuth) authKiller.interrupt();
+                    break;
+                }
                 case MESSAGE: {
                     MessageCommand commandData = (MessageCommand) command.getData();
                     String receiver = commandData.getReceiver();
                     String pr = "";
-                    if (!receiver.equals("all")) pr = "(private)";
+                    if (!receiver.equals(BROADCAST_TAG)) pr = "(private)";
                     String message = String.format("%s %s %s: %s", getTime(), pr, getNickname(), commandData.getMessage());
                     networkServer.sendMessage(this, receiver, Command.messageCommand(nickname, message, receiver));
                     break;
@@ -85,9 +93,22 @@ public class ClientHandler {
                     networkServer.updateUserList();
                     break;
                 }
+                case REGISTER: {
+                    RegisterCommand commandData = (RegisterCommand) command.getData();
+                    String login = commandData.getLogin();
+                    String password = commandData.getPassword();
+                    String nickname = commandData.getUsername();
+                    try {
+                        networkServer.getAuthService().registerNewUser(login, password, nickname);
+                    } catch (RuntimeException e) {
+                        sendMessage(Command.errorCommand(e.getMessage()));
+                    } finally {
+                        sendMessage(Command.infoCommand("Данные успешно добавленны. Пожалуйста, авторизируйтесь!"));
+                    }
+                    break;
+                }
                 default:
                     logger.error("Unknown type of command : " + command.getType());
-//                    System.err.println("Unknown type of command : " + command.getType());
             }
         }
     }
@@ -98,7 +119,6 @@ public class ClientHandler {
         } catch (ClassNotFoundException e) {
             String errorMessage = "Unknown type of object from client!";
             logger.error(errorMessage);
-//            System.err.println(errorMessage);
             e.printStackTrace();
             sendMessage(Command.errorCommand(errorMessage));
             return null;
@@ -111,7 +131,7 @@ public class ClientHandler {
                 networkServer.unsubscribe(this);
                 networkServer.getAuthService().logOut(login);
                 String message = getTime() + nickname + " disconnected";
-                String receiver = "all";
+                String receiver = BROADCAST_TAG;
                 networkServer.sendMessage( this, receiver, Command.messageCommand(nickname, message, receiver));
                 executorService.shutdown();
             }
@@ -125,38 +145,18 @@ public class ClientHandler {
         return this.nickname;
     }
 
-    private synchronized void authentication() throws IOException {
-
-        Thread authKiller = new Thread(() -> {
+    private void connectionTimeOutKiller() {
+        authKiller = new Thread(() -> {
             try {
                 Thread.sleep(120000);
                 logger.info("Client disconnected by timeout");
-//                System.out.println("Client disconnected by timeout");
                 closeConnection();
             } catch (InterruptedException e) {
                 logger.info("Auth successful");
-//                System.out.println("Auth successful");
             }
         });
 
         authKiller.start();
-
-        while (true) {
-            Command command = readCommand();
-            if (command == null) {
-                continue;
-            }
-            if (command.getType() == CTypeEnum.AUTH) {
-                boolean successfulAuth = processAuthCommand(command);
-                if (successfulAuth){
-                    authKiller.interrupt();
-                    return;
-                }
-            } else {
-                logger.error("Unknown type of command for auth process: " + command.getType());
-//                System.err.println("Unknown type of command for auth process: " + command.getType());
-            }
-        }
     }
 
     private boolean processAuthCommand(Command command) throws IOException {
@@ -166,7 +166,7 @@ public class ClientHandler {
         String username = networkServer.getAuthService().getUsernameByLoginAndPassword(login, password);
         logger.info("AuthData via Login: {}, Password: {}", login, password);
         if (username == null) {
-            logger.error("Invalid auth data or user is allready online");
+            logger.error("Invalid auth data or user is online");
             Command errorCommand = Command.errorCommand("Отсутствует учетная запись или пользователь уже в сети");
             sendMessage(errorCommand);
             return false;
@@ -174,7 +174,7 @@ public class ClientHandler {
         else {
             nickname = username;
             String message = String.format("%s %s зашел в чат!",getTime(), nickname);
-            String receiver = "all";
+            String receiver = BROADCAST_TAG;
             networkServer.sendMessage(this, receiver, Command.messageCommand(null, message, receiver));
             commandData.setUsername(nickname);
             sendMessage(command);

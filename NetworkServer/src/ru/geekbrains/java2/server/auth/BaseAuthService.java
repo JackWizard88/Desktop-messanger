@@ -25,7 +25,6 @@ public class BaseAuthService implements AuthService {
         try {
             String sql = "UPDATE userData SET Username = ? WHERE Login = ?";
             PreparedStatement statement = sqlconnection.prepareStatement( sql );
-//            System.out.println(username + " changed name to " + newNickname);
             logger.info(username + " changed name to " + newNickname);
             statement.setString( 1, newNickname);
             statement.setString( 2, username);
@@ -44,6 +43,33 @@ public class BaseAuthService implements AuthService {
             statement2.execute();
         } catch (SQLException e) {
             e.printStackTrace();
+        }
+    }
+
+    @Override
+    public void registerNewUser(String login, String password, String nickname) {
+
+        try {
+            String sql = "SELECT EXISTS(SELECT * FROM userData WHERE Login = ?)";
+            PreparedStatement statement = sqlconnection.prepareStatement( sql );
+            statement.setString( 1, login);
+
+            ResultSet rs = statement.executeQuery();
+
+            if (rs.getInt(1) != 0) {
+                logger.error(String.format("error creating new user with %s, login is already in use", login));
+                throw new RuntimeException("Такой пользователь уже существует!");
+            } else {
+                String sql2 = "INSERT INTO userData (Login, Password, Username) VALUES (?, ?, ?)";
+                PreparedStatement statement2 = sqlconnection.prepareStatement(sql2);
+                statement2.setString( 1, login);
+                statement2.setString( 2, password);
+                statement2.setString( 3, nickname);
+                statement2.execute();
+                logger.info(String.format("NEW USER CREATED LOGIN: %s, USERNAME: %s", login, nickname));
+            }
+        } catch (SQLException throwables) {
+            throwables.printStackTrace();
         }
     }
 
@@ -70,7 +96,6 @@ public class BaseAuthService implements AuthService {
 
         } catch (SQLException e) {
             logger.error("Invalid auth data. Auth refused");
-//            System.err.println("Invalid auth data. Auth refused");
 
         }
         return username;
@@ -84,18 +109,14 @@ public class BaseAuthService implements AuthService {
             Statement statement = sqlconnection.createStatement();
             statement.execute(sql2);
             logger.info("UserData successfully connected");
-//            System.out.println("UserData successfully connected");
         } catch (SQLException e) {
             logger.error("Error while reading UserData database");
-//            System.out.println("Error while reading UserData database");
         }
         logger.info("Auth service started");
-//        System.out.println("Auth service started");
     }
 
     @Override
     public void stop() {
-
 
         try {
             sqlconnection.close();
@@ -103,6 +124,5 @@ public class BaseAuthService implements AuthService {
             e.printStackTrace();
         }
         logger.info("Auth service stopped");
-//        System.out.println("Auth service stopped");
     }
 }

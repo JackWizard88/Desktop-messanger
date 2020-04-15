@@ -46,6 +46,13 @@ public class Command implements Serializable {
             return command;
         }
 
+        public static Command infoCommand(String infoMessage) {
+            Command command = new Command();
+            command.type = CTypeEnum.INFO;
+            command.data = new InfoCommand(infoMessage);
+            return command;
+        }
+
         public static Command messageCommand(String username, String message, String acceptor) {
             Command command = new Command();
             command.type = CTypeEnum.MESSAGE;

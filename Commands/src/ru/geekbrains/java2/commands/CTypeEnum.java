@@ -9,6 +9,7 @@ package ru.geekbrains.java2.commands;
         MESSAGE,
         UPDATE_USERS_LIST,
         ERROR,
+        INFO,
 
     }
 

@@ -5,6 +5,7 @@ import ru.geekbrains.java2.client.controller.AuthEvent;
 import ru.geekbrains.java2.client.controller.ClientController;
 import ru.geekbrains.java2.client.controller.fxview.FxChatWindow;
 import ru.geekbrains.java2.commands.Command;
+import ru.geekbrains.java2.commands.InfoCommand;
 import ru.geekbrains.java2.commands.command.AuthCommand;
 import ru.geekbrains.java2.commands.command.ErrorCommand;
 import ru.geekbrains.java2.commands.command.MessageCommand;
@@ -76,6 +77,13 @@ public class NetworkService {
                             );
                             break;
                         }
+                        case INFO: {
+                            if (controller.getAuthDialog() != null || controller.getClientChat() != null) {
+                                InfoCommand commandData = (InfoCommand) command.getData();
+                                showInfoMessage(commandData.getInfoMessage());
+                            }
+                            break;
+                        }
                         default:
                             System.err.println("Unknown type of command: " + command.getType());
                     }
@@ -88,6 +96,10 @@ public class NetworkService {
                 }
             }
         }).start();
+    }
+
+    private void showInfoMessage(String infoMessage) {
+        controller.showInfoMessage(infoMessage);
     }
 
     public void sendCommand(Command command) throws IOException {

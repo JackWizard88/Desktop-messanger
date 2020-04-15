@@ -1,5 +1,7 @@
 package ru.geekbrains.java2.server.client;
 
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import ru.geekbrains.java2.commands.CTypeEnum;
 import ru.geekbrains.java2.commands.Command;
 import ru.geekbrains.java2.commands.command.AuthCommand;
@@ -19,6 +21,7 @@ public class ClientHandler {
 
     private final NetworkServer networkServer;
     private final Socket clientSocket;
+    private static final Logger logger = LogManager.getLogger(ClientHandler.class);
 
     private ObjectInputStream in;
     private ObjectOutputStream out;
@@ -26,7 +29,7 @@ public class ClientHandler {
     private String nickname;
     private String login;
 
-    private ExecutorService executorService = Executors.newFixedThreadPool(1);
+    private final ExecutorService executorService = Executors.newFixedThreadPool(1);
 
     public ClientHandler(NetworkServer networkServer, Socket socket) {
         this.networkServer = networkServer;
@@ -47,7 +50,8 @@ public class ClientHandler {
                     authentication();
                     readData();
                 } catch (IOException e) {
-                    System.out.println("Connection with " + nickname + " was closed!");
+                    logger.info("Connection with " + nickname + " was closed!");
+//                    System.out.println("Connection with " + nickname + " was closed!");
                 } finally {
                     closeConnection();
                 }
@@ -81,7 +85,8 @@ public class ClientHandler {
                     break;
                 }
                 default:
-                    System.err.println("Unknown type of command : " + command.getType());
+                    logger.error("Unknown type of command : " + command.getType());
+//                    System.err.println("Unknown type of command : " + command.getType());
             }
         }
     }
@@ -91,7 +96,8 @@ public class ClientHandler {
             return (Command) in.readObject();
         } catch (ClassNotFoundException e) {
             String errorMessage = "Unknown type of object from client!";
-            System.err.println(errorMessage);
+            logger.error(errorMessage);
+//            System.err.println(errorMessage);
             e.printStackTrace();
             sendMessage(Command.errorCommand(errorMessage));
             return null;
@@ -181,10 +187,12 @@ public class ClientHandler {
         Thread authKiller = new Thread(() -> {
             try {
                 Thread.sleep(120000);
-                System.out.println("Client disconnected by timeout");
+                logger.info("Client disconnected by timeout");
+//                System.out.println("Client disconnected by timeout");
                 closeConnection();
             } catch (InterruptedException e) {
-                System.out.println("Auth successful");
+                logger.info("Auth successful");
+//                System.out.println("Auth successful");
             }
         });
 
@@ -202,7 +210,8 @@ public class ClientHandler {
                     return;
                 }
             } else {
-                System.err.println("Unknown type of command for auth process: " + command.getType());
+                logger.error("Unknown type of command for auth process: " + command.getType());
+//                System.err.println("Unknown type of command for auth process: " + command.getType());
             }
         }
     }
@@ -212,7 +221,9 @@ public class ClientHandler {
         login = commandData.getLogin();
         String password = commandData.getPassword();
         String username = networkServer.getAuthService().getUsernameByLoginAndPassword(login, password);
+        logger.info("AuthData via Login: {}, Password: {}", login, password);
         if (username == null) {
+            logger.error("Invalid auth data or user is allready online");
             Command errorCommand = Command.errorCommand("Отсутствует учетная запись или пользователь уже в сети");
             sendMessage(errorCommand);
             return false;

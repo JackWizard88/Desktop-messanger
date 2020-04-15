@@ -53,6 +53,9 @@ public class FxChatWindow implements Window {
     private CheckMenuItem censoredCheckbox;
 
     @FXML
+    private Button registrationButton;
+
+    @FXML
     private MenuItem exitButton;
     
     @FXML
@@ -60,11 +63,14 @@ public class FxChatWindow implements Window {
 
         userListField.getSelectionModel().setSelectionMode(SelectionMode.SINGLE);
 
+//TODO сделать лейбл отображения получателя в окне клиента
         userListField.getSelectionModel().selectedItemProperty().addListener((observable, oldValue, newValue) -> {
             String selected = userListField.getSelectionModel().getSelectedItem();
-            if (selected.equals(clientController.getNickname())) {
-                receiver = "all";
-            } else receiver = selected;
+            if (selected != null) {
+                if (selected.equals(clientController.getNickname())) {
+                    receiver = "all";
+                } else receiver = selected;
+            }
         });
 
         chatTextField.setWrapText(true);
@@ -84,13 +90,19 @@ public class FxChatWindow implements Window {
                 sendMessage(inputTextField.getText());
             }
         });
+
+
+//TODO сделать регистрацию
+//        registrationButton.setOnAction(e -> {
+//
+//        });
     }
 
     private void changeNickname() {
 
         TextInputDialog dialog = new TextInputDialog(clientController.getNickname());
-        dialog.setTitle("Смена имени");
         dialog.setHeaderText("Введите новый никнейм:");
+        dialog.setTitle("");
         dialog.setResizable(false);
         dialog.setGraphic(null);
         Optional<String> result = dialog.showAndWait();
@@ -106,10 +118,14 @@ public class FxChatWindow implements Window {
     //метод отправки сообщений
     private void sendMessage(String msg) {
         if (!msg.trim().isEmpty()) {
+            String pr = "Я:";
             Date dateNow = new Date();
             SimpleDateFormat formatForDateNow = new SimpleDateFormat("HH:mm:ss");
-            String time = "[" + formatForDateNow.format(dateNow) + "} ";
-            String message = time + "Я: " + msg + "\n";
+            String time = "[" + formatForDateNow.format(dateNow) + "] ";
+            if (!receiver.equals("all")) {
+                pr = String.format("(private) %s:", receiver);
+            }
+            String message = String.format("%s %s %s \n", time, pr, msg);
             chatTextField.appendText(message);
             clientController.getHistoryLogger().SaveHistory(message);
             clientController.sendMessage(msg, receiver);

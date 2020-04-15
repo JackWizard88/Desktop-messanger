@@ -3,7 +3,6 @@ package ru.geekbrains.java2.client.model;
 import javafx.application.Platform;
 import ru.geekbrains.java2.client.controller.AuthEvent;
 import ru.geekbrains.java2.client.controller.ClientController;
-import ru.geekbrains.java2.client.controller.fxview.FxAuthDialog;
 import ru.geekbrains.java2.client.controller.fxview.FxChatWindow;
 import ru.geekbrains.java2.commands.Command;
 import ru.geekbrains.java2.commands.command.AuthCommand;

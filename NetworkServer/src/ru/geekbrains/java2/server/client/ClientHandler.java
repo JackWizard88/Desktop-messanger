@@ -71,7 +71,9 @@ public class ClientHandler {
                 case MESSAGE: {
                     MessageCommand commandData = (MessageCommand) command.getData();
                     String receiver = commandData.getReceiver();
-                    String message = String.format("%s %s: %s", getTime(), getNickname(), commandData.getMessage());
+                    String pr = "";
+                    if (!receiver.equals("all")) pr = "(private)";
+                    String message = String.format("%s %s %s: %s", getTime(), pr, getNickname(), commandData.getMessage());
                     networkServer.sendMessage(this, receiver, Command.messageCommand(nickname, message, receiver));
                     break;
                 }
@@ -171,7 +173,7 @@ public class ClientHandler {
         }
         else {
             nickname = username;
-            String message = getTime() + nickname + " зашел в чат!";
+            String message = String.format("%s %s зашел в чат!",getTime(), nickname);
             String receiver = "all";
             networkServer.sendMessage(this, receiver, Command.messageCommand(null, message, receiver));
             commandData.setUsername(nickname);
@@ -188,6 +190,6 @@ public class ClientHandler {
     private String getTime() {
         Date dateNow = new Date();
         SimpleDateFormat formatForDateNow = new SimpleDateFormat("HH:mm:ss");
-        return "[" + formatForDateNow.format(dateNow) + "] ";
+        return "[" + formatForDateNow.format(dateNow) + "]";
     }
 }

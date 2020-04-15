@@ -18,14 +18,13 @@ public class ClientController {
     private final NetworkService networkService;
     private Stage primaryStage;
     private Parent rootChat;
+    private String nickname;
+    private String username;
+    private HistoryLogger history;
 
     public String getNickname() {
         return nickname;
     }
-
-    private String nickname;
-    private String username;
-    private HistoryLogger history;
 
     public FxAuthDialog getAuthDialog() {
         return authDialog;
@@ -80,9 +79,10 @@ public class ClientController {
         authDialog.setClientController(this);
 
 
-        Scene scene = new Scene(rootChat, 300, 200);
+        Scene scene = new Scene(rootChat, 300, 220);
         primaryStage.setTitle("LogIn Messenger");
         primaryStage.setScene(scene);
+        primaryStage.setResizable(false);
         primaryStage.show();
         primaryStage.setOnCloseRequest(e->{
             System.exit(0);

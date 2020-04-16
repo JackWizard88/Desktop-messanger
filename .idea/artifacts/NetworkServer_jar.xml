@@ -3,7 +3,14 @@
     <output-path>$PROJECT_DIR$/out/artifacts/NetworkServer_jar</output-path>
     <root id="archive" name="NetworkServer.jar">
       <element id="module-output" name="NetworkServer" />
+      <element id="module-output" name="Commands" />
+      <element id="library" level="project" name="javafx-sdk-11.0" />
       <element id="extracted-dir" path="$PROJECT_DIR$/../../_LIB/sqlite-jdbc-3.30.1.jar" path-in-jar="/" />
+      <element id="extracted-dir" path="$PROJECT_DIR$/../../_LIB/junit/hamcrest-core-1.3.jar" path-in-jar="/" />
+      <element id="extracted-dir" path="$PROJECT_DIR$/../../_LIB/junit/junit-4.13.jar" path-in-jar="/" />
+      <element id="extracted-dir" path="$PROJECT_DIR$/../../_LIB/apache-log4j-2.13.1-bin/log4j-core-2.13.1.jar" path-in-jar="/" />
+      <element id="extracted-dir" path="$PROJECT_DIR$/../../_LIB/apache-log4j-2.13.1-bin/log4j-api-2.13.1.jar" path-in-jar="/" />
+      <element id="extracted-dir" path="$PROJECT_DIR$/../../_LIB/apache-log4j-2.13.1-bin/log4j-core-2.13.1-tests.jar" path-in-jar="/" />
     </root>
   </artifact>
 </component>

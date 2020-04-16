@@ -101,10 +101,31 @@ public class BaseAuthService implements AuthService {
         return username;
     }
 
+    private void createTableIfNotExist() {
+
+        String sql = "CREATE TABLE IF NOT EXISTS userData (\n" +
+                "    id       INTEGER PRIMARY KEY AUTOINCREMENT\n" +
+                "                     UNIQUE,\n" +
+                "    Username STRING  NOT NULL,\n" +
+                "    Login    STRING  NOT NULL ON CONFLICT FAIL,\n" +
+                "    Password STRING  NOT NULL,\n" +
+                "    Logged   BOOLEAN DEFAULT False\n" +
+                ");";
+
+        try {
+            Statement stm = sqlconnection.createStatement();
+            stm.execute(sql);
+        } catch (SQLException throwables) {
+            throwables.printStackTrace();
+            logger.error("Unable to create table in database");
+        }
+    }
+
     @Override
     public void start() {
         try {
             connectSQL();
+            createTableIfNotExist();
             String sql2 = "UPDATE userData SET Logged = 0";
             Statement statement = sqlconnection.createStatement();
             statement.execute(sql2);
@@ -114,6 +135,7 @@ public class BaseAuthService implements AuthService {
         }
         logger.info("Auth service started");
     }
+
 
     @Override
     public void stop() {

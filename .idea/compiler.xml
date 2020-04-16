@@ -12,8 +12,8 @@
       </profile>
     </annotationProcessing>
     <bytecodeTargetLevel>
-      <module name="Commands" target="1.5" />
-      <module name="Java_Level2" target="1.5" />
+      <module name="Commands" target="1.8" />
+      <module name="Java_Level2" target="1.8" />
       <module name="NetworkClient" target="1.8" />
       <module name="NetworkServer" target="1.8" />
     </bytecodeTargetLevel>

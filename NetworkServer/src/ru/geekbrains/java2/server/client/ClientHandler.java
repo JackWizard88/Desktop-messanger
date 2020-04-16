@@ -72,8 +72,10 @@ public class ClientHandler {
             switch (command.getType()) {
                 case AUTH: {
                     boolean successfulAuth = processAuthCommand(command);
-                    if (successfulAuth) authKiller.interrupt();
-                    logger.info("Auth successful");
+                    if (successfulAuth) {
+                        authKiller.interrupt();
+                        logger.info("Auth successful");
+                    }
                     break;
                 }
                 case MESSAGE: {

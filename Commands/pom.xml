@@ -4,36 +4,27 @@
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
     <modelVersion>4.0.0</modelVersion>
 
-    <groupId>main</groupId>
     <artifactId>ClientServerCommands</artifactId>
     <version>1.0</version>
 
+    <parent>
+        <groupId>main</groupId>
+        <artifactId>module_project</artifactId>
+        <version>0.99</version>
+        <relativePath>../pom.xml</relativePath>
+    </parent>
+
     <build>
+        <sourceDirectory>src</sourceDirectory>
 
         <plugins>
 
-            <plugin>
-                <groupId>com.soebes.maven.plugins</groupId>
-                <artifactId>uptodate-maven-plugin</artifactId>
-                <version>0.2.0</version>
-                <executions>
-                    <execution>
-                        <goals>
-                            <goal>dependency</goal>
-                        </goals>
-                        <phase>validate</phase>
-                    </execution>
-                </executions>
-            </plugin>
 
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-jar-plugin</artifactId>
                 <version>3.2.0</version>
 
-                <configuration>
-                    <classesDirectory>ru.geekbrains.java2.commands</classesDirectory>
-                </configuration>
             </plugin>
 
         </plugins>

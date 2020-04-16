@@ -4,7 +4,6 @@
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
     <modelVersion>4.0.0</modelVersion>
 
-    <groupId>main</groupId>
     <artifactId>JackClient</artifactId>
     <version>0.99</version>
     <packaging>jar</packaging>
@@ -17,35 +16,33 @@
     </parent>
 
     <build>
+        <sourceDirectory>src</sourceDirectory>
 
         <plugins>
-            <plugin>
-                <groupId>com.soebes.maven.plugins</groupId>
-                <artifactId>uptodate-maven-plugin</artifactId>
-                <version>0.2.0</version>
-                <executions>
-                    <execution>
-                        <goals>
-                            <goal>dependency</goal>
-                        </goals>
-                        <phase>validate</phase>
-                    </execution>
-                </executions>
-            </plugin>
 
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
-                <artifactId>maven-jar-plugin</artifactId>
-                <version>3.2.0</version>
+                <artifactId>maven-compiler-plugin</artifactId>
+                <version>3.8.1</version>
                 <configuration>
-                    <archive>
-                        <manifest>
-                            <mainClass>main.NetworkClient.NetworkClient</mainClass>
-                        </manifest>
-                    </archive>
+                    <source>1.8</source>
+                    <target>1.8</target>
                 </configuration>
             </plugin>
 
+            <plugin>
+                <artifactId>maven-assembly-plugin</artifactId>
+                <configuration>
+                    <archive>
+                        <manifest>
+                            <mainClass>ru.geekbrains.java2.client.NetworkClient</mainClass>
+                        </manifest>
+                    </archive>
+                    <descriptorRefs>
+                        <descriptorRef>jar-with-dependencies</descriptorRef>
+                    </descriptorRefs>
+                </configuration>
+            </plugin>
 
         </plugins>
     </build>
@@ -57,15 +54,6 @@
             <artifactId>ClientServerCommands</artifactId>
             <version>1.0</version>
         </dependency>
-
-
-        <!-- https://mvnrepository.com/artifact/com.zenjava/javafx-maven-plugin -->
-        <dependency>
-            <groupId>com.zenjava</groupId>
-            <artifactId>javafx-maven-plugin</artifactId>
-            <version>8.8.3</version>
-        </dependency>
-
 
     </dependencies>
 </project>

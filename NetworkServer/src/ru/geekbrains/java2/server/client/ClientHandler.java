@@ -73,6 +73,7 @@ public class ClientHandler {
                 case AUTH: {
                     boolean successfulAuth = processAuthCommand(command);
                     if (successfulAuth) authKiller.interrupt();
+                    logger.info("Auth successful");
                     break;
                 }
                 case MESSAGE: {
@@ -147,11 +148,11 @@ public class ClientHandler {
     private void connectionTimeOutKiller() {
         authKiller = new Thread(() -> {
             try {
-                Thread.sleep(120000);
+                Thread.sleep(300000);
                 logger.info("Client disconnected by timeout");
                 closeConnection();
             } catch (InterruptedException e) {
-                logger.info("Auth successful");
+                logger.info("TimeOut-Killer Interrupted");
             }
         });
 

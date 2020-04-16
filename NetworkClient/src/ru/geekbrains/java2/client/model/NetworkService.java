@@ -1,7 +1,6 @@
 package ru.geekbrains.java2.client.model;
 
 import javafx.application.Platform;
-import ru.geekbrains.java2.client.controller.AuthEvent;
 import ru.geekbrains.java2.client.controller.ClientController;
 import ru.geekbrains.java2.client.controller.fxview.FxChatWindow;
 import ru.geekbrains.java2.commands.Command;
@@ -10,6 +9,7 @@ import ru.geekbrains.java2.commands.command.AuthCommand;
 import ru.geekbrains.java2.commands.command.ErrorCommand;
 import ru.geekbrains.java2.commands.command.MessageCommand;
 import ru.geekbrains.java2.commands.command.UpdateUsersListCommand;
+import ru.geekbrains.java2.client.controller.AuthEvent;
 import java.io.*;
 import java.net.Socket;
 import java.util.List;

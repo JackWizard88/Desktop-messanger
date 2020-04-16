@@ -13,7 +13,7 @@ public class FxRegWindow implements Window {
     private ClientController clientController;
     private Stage stage;
 
-    public void setClientController(ru.geekbrains.java2.client.controller.ClientController clientController) {
+    public void setClientController(ClientController clientController) {
         this.clientController = clientController;
     }
 

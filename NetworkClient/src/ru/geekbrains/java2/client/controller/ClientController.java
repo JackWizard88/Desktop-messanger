@@ -10,7 +10,6 @@ import ru.geekbrains.java2.client.controller.fxview.FxChatWindow;
 import ru.geekbrains.java2.client.history.HistoryLogger;
 import ru.geekbrains.java2.client.model.NetworkService;
 import java.io.IOException;
-
 import static ru.geekbrains.java2.commands.Command.*;
 
 public class ClientController {
@@ -68,7 +67,7 @@ public class ClientController {
 
         FXMLLoader loaderAuth = new FXMLLoader();
         try {
-            rootChat = loaderAuth.load(getClass().getResourceAsStream("fxview/FxAuthDialog.fxml"));
+            rootChat = loaderAuth.load(getClass().getResourceAsStream("/FxAuthDialog.fxml"));
         } catch (IOException e) {
             e.printStackTrace();
         }
@@ -88,13 +87,13 @@ public class ClientController {
         FXMLLoader loaderChat = new FXMLLoader();
 
         try {
-            rootChat = loaderChat.load(getClass().getResourceAsStream("fxview/FxChatWindow.fxml"));
+            rootChat = loaderChat.load(getClass().getResourceAsStream("/FxChatWindow.fxml"));
             clientChat  = loaderChat.getController();
             history = new HistoryLogger(username, clientChat);
             networkService.setCurentWindow(clientChat);
             clientChat.setClientController(this);
             Scene scene = new Scene(rootChat, 600, 400);
-            scene.getStylesheets().add(getClass().getResource("userList.css").toExternalForm());
+            scene.getStylesheets().add(getClass().getResource("/userList.css").toExternalForm());
             primaryStage.setTitle(nickname + " via JackMessenger");
             primaryStage.setScene(scene);
             primaryStage.setMinHeight(200);

@@ -62,7 +62,7 @@ public class FxAuthDialog implements Window {
     }
 
     private void openRegWindow() {
-        FXMLLoader loader = new FXMLLoader(getClass().getResource("FxRegWindow.fxml"));
+        FXMLLoader loader = new FXMLLoader(getClass().getResource("/FxRegWindow.fxml"));
         Stage secondaryStage = new Stage();
         Parent root;
 

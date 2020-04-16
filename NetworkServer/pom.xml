@@ -4,9 +4,17 @@
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
     <modelVersion>4.0.0</modelVersion>
 
-    <groupId>main.java.ru.geekbrains.java2.server</groupId>
+    <groupId>main</groupId>
     <artifactId>JackServer</artifactId>
-    <version>00.99</version>
+    <version>0.99</version>
+    <packaging>jar</packaging>
+
+    <parent>
+        <groupId>main</groupId>
+        <artifactId>module_project</artifactId>
+        <version>0.99</version>
+        <relativePath>../pom.xml</relativePath>
+    </parent>
 
     <build>
         <plugins>
@@ -39,33 +47,15 @@
             </plugin>
 
 
-            <plugin>
-                <groupId>org.apache.maven.plugins</groupId>
-                <artifactId>maven-compiler-plugin</artifactId>
-                <version>3.8.1</version>
-            </plugin>
-
-
         </plugins>
     </build>
 
-    <repositories>
-        <repository>
-            <id>localrep</id>
-            <name>local repository</name>
-            <url>file:${project.basedir}/lib</url>
-        </repository>
-    </repositories>
-
     <dependencies>
 
-
-
         <dependency>
-            <groupId>ru.geekbrains.java2.commands</groupId>
+            <groupId>main</groupId>
             <artifactId>ClientServerCommands</artifactId>
             <version>1.0</version>
-
         </dependency>
 
         <!-- https://mvnrepository.com/artifact/org.apache.logging.log4j/log4j-core -->

@@ -4,13 +4,21 @@
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
     <modelVersion>4.0.0</modelVersion>
 
-    <groupId>ru.geekbrains.java2.server</groupId>
+    <groupId>main</groupId>
     <artifactId>JackClient</artifactId>
-    <version>00.070</version>
+    <version>0.99</version>
+    <packaging>jar</packaging>
+
+    <parent>
+        <groupId>main</groupId>
+        <artifactId>module_project</artifactId>
+        <version>0.99</version>
+        <relativePath>../pom.xml</relativePath>
+    </parent>
 
     <build>
-        <plugins>
 
+        <plugins>
             <plugin>
                 <groupId>com.soebes.maven.plugins</groupId>
                 <artifactId>uptodate-maven-plugin</artifactId>
@@ -27,21 +35,12 @@
 
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
-                <artifactId>maven-compiler-plugin</artifactId>
-                <configuration>
-                    <source>8</source>
-                    <target>8</target>
-                </configuration>
-            </plugin>
-
-            <plugin>
-                <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-jar-plugin</artifactId>
                 <version>3.2.0</version>
                 <configuration>
                     <archive>
                         <manifest>
-                            <mainClass>ru.geekbrains.java2.server.ServerApp</mainClass>
+                            <mainClass>main.NetworkClient.NetworkClient</mainClass>
                         </manifest>
                     </archive>
                 </configuration>
@@ -54,24 +53,11 @@
     <dependencies>
 
         <dependency>
-            <groupId>ru.geekbrains.java2.commands</groupId>
+            <groupId>main</groupId>
             <artifactId>ClientServerCommands</artifactId>
             <version>1.0</version>
         </dependency>
 
-        <!-- https://mvnrepository.com/artifact/org.apache.logging.log4j/log4j-core -->
-        <dependency>
-            <groupId>org.apache.logging.log4j</groupId>
-            <artifactId>log4j-core</artifactId>
-            <version>2.13.1</version>
-        </dependency>
-
-        <!-- https://mvnrepository.com/artifact/org.apache.logging.log4j/log4j-api -->
-        <dependency>
-            <groupId>org.apache.logging.log4j</groupId>
-            <artifactId>log4j-api</artifactId>
-            <version>2.13.1</version>
-        </dependency>
 
         <!-- https://mvnrepository.com/artifact/com.zenjava/javafx-maven-plugin -->
         <dependency>
@@ -80,12 +66,6 @@
             <version>8.8.3</version>
         </dependency>
 
-        <!-- https://mvnrepository.com/artifact/org.apache.maven.plugins/maven-compiler-plugin -->
-        <dependency>
-            <groupId>org.apache.maven.plugins</groupId>
-            <artifactId>maven-compiler-plugin</artifactId>
-            <version>3.8.1</version>
-        </dependency>
 
     </dependencies>
 </project>

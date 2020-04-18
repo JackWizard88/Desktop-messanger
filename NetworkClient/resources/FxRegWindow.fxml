@@ -1,34 +1,34 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
-<?import javafx.scene.control.Button?>
-<?import javafx.scene.control.Label?>
-<?import javafx.scene.control.PasswordField?>
-<?import javafx.scene.control.TextField?>
-<?import javafx.scene.layout.AnchorPane?>
-<?import javafx.scene.layout.BorderPane?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+<?import javafx.scene.text.*?>
 
 <BorderPane prefHeight="250.0" prefWidth="350.0" xmlns="http://javafx.com/javafx/10.0.2-internal" xmlns:fx="http://javafx.com/fxml/1" fx:controller="ru.geekbrains.java2.client.controller.fxview.FxRegWindow">
    <center>
-      <AnchorPane prefHeight="200.0" prefWidth="200.0" BorderPane.alignment="CENTER">
-         <TextField fx:id="loginTextField" layoutX="10.0" layoutY="50.0" prefHeight="25.0" prefWidth="148.0"/>
-         <PasswordField fx:id="passTextField1" layoutX="10.0" layoutY="80.0"/>
-         <PasswordField fx:id="passTextField2" layoutX="10.0" layoutY="110.0"/>
-         <TextField fx:id="nicknameTextField" layoutX="10.0" layoutY="140.0"/>
-         <Button fx:id="registerButton" layoutX="-54.0" layoutY="186.0" mnemonicParsing="false"
-                 text="Зарегистрироваться"/>
-         <Button fx:id="cancelButton" layoutX="101.0" layoutY="186.0" mnemonicParsing="false" text="Отмена"/>
+      <AnchorPane prefHeight="250.0" prefWidth="350.0" BorderPane.alignment="CENTER">
+         <TextField fx:id="loginTextField" layoutX="164.0" layoutY="43.0" prefHeight="25.0" prefWidth="148.0" />
+         <PasswordField fx:id="passTextField1" layoutX="164.0" layoutY="73.0" />
+         <PasswordField fx:id="passTextField2" layoutX="164.0" layoutY="103.0" />
+         <TextField fx:id="nicknameTextField" layoutX="164.0" layoutY="133.0" />
+         <Button fx:id="registerButton" layoutX="38.0" layoutY="194.0" mnemonicParsing="false" prefHeight="30.0" prefWidth="140.0" text="Зарегистрироваться" />
+         <Button fx:id="cancelButton" layoutX="193.0" layoutY="194.0" mnemonicParsing="false" prefHeight="30.0" prefWidth="100.0" text="Отмена" />
+         <Label alignment="CENTER_RIGHT" layoutX="58.0" layoutY="46.0" prefHeight="20.0" prefWidth="100.0" text="Логин:">
+            <font>
+               <Font size="14.0" />
+            </font></Label>
+         <Label alignment="CENTER_RIGHT" layoutX="58.0" layoutY="76.0" prefHeight="20.0" prefWidth="100.0" text="Пароль:">
+            <font>
+               <Font size="14.0" />
+            </font></Label>
+         <Label alignment="CENTER_RIGHT" layoutX="46.0" layoutY="106.0" prefHeight="20.0" prefWidth="112.0" text="Еще раз пароль:">
+            <font>
+               <Font size="14.0" />
+            </font></Label>
+         <Label alignment="CENTER_RIGHT" layoutX="58.0" layoutY="136.0" prefHeight="20.0" prefWidth="100.0" text="Никнейм:">
+            <font>
+               <Font size="14.0" />
+            </font></Label>
       </AnchorPane>
    </center>
-   <left>
-      <AnchorPane prefHeight="400.0" prefWidth="60.0" BorderPane.alignment="CENTER">
-         <Label alignment="CENTER_RIGHT" layoutX="20.0" layoutY="50.0" prefHeight="20.0" prefWidth="100.0"
-                text="Логин:"/>
-         <Label alignment="CENTER_RIGHT" layoutX="20.0" layoutY="80.0" prefHeight="20.0" prefWidth="100.0"
-                text="Пароль:"/>
-         <Label alignment="CENTER_RIGHT" layoutX="20.0" layoutY="110.0" prefHeight="20.0" prefWidth="100.0"
-                text="Еще раз пароль:"/>
-         <Label alignment="CENTER_RIGHT" layoutX="20.0" layoutY="140.0" prefHeight="20.0" prefWidth="100.0"
-                text="Никнейм:"/>
-      </AnchorPane>
-   </left>
 </BorderPane>

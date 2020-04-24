@@ -45,7 +45,6 @@ public class FxServerApp {
                     labelServerStatus.setText("Server status: OFFLINE");
                     labelServerStatus.setTextFill(Color.RED);
                     isRunning = false;
-                    networkServerThread.interrupt();
                 }
             }
         });

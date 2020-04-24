@@ -118,6 +118,7 @@ public class NetworkService {
     public void close() {
         try {
             socket.close();
+            controller.showErrorMessage("Server shut down! please Restart!");
         } catch (IOException e) {
             e.printStackTrace();
         }

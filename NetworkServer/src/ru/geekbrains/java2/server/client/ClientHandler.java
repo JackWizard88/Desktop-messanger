@@ -20,6 +20,11 @@ public class ClientHandler {
 
     private final String BROADCAST_TAG = "all";
     private final NetworkServer networkServer;
+
+    public Socket getClientSocket() {
+        return clientSocket;
+    }
+
     private final Socket clientSocket;
     private static final Logger logger = LogManager.getLogger(ClientHandler.class);
 
@@ -28,8 +33,6 @@ public class ClientHandler {
     private Thread authKiller;
     private String nickname;
     private String login;
-
-    private boolean isInterrupted;
 
     private final ExecutorService executorService = Executors.newFixedThreadPool(1);
 
@@ -66,10 +69,6 @@ public class ClientHandler {
 
     private void readData() throws IOException {
         while (true) {
-
-            if (isInterrupted) {
-                return;
-            }
 
             Command command = readCommand();
             if (command == null) {
@@ -199,9 +198,5 @@ public class ClientHandler {
         Date dateNow = new Date();
         SimpleDateFormat formatForDateNow = new SimpleDateFormat("HH:mm:ss");
         return "[" + formatForDateNow.format(dateNow) + "]";
-    }
-
-    public void setInterrupted(boolean interrupted) {
-        isInterrupted = interrupted;
     }
 }

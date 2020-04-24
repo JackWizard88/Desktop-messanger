@@ -38,7 +38,8 @@ public class NetworkServer {
                 logger.info("Client connected");
                 createClientHandler(clientSocket);
             }
-        } catch (SocketException se) {            logger.info("Server Socket closed");
+        } catch (SocketException se) {
+            logger.info("Server Socket closed");
         } catch (IOException e) {
             logger.error("Error");
         } finally {
@@ -91,15 +92,15 @@ public class NetworkServer {
 
     public int stop() {
 
-        try {
-            serverSocket.close();
-        } catch (IOException e) {
-            e.printStackTrace();
+        for (ClientHandler client : clients) {
+            try {
+                client.sendMessage(Command.errorCommand("Server shut down!"));
+                client.getClientSocket().close();
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
         }
 
-        for (ClientHandler client : clients) {
-            client.setInterrupted(true);
-        }
         logger.info("Server STOPPED");
         return 1;
     }

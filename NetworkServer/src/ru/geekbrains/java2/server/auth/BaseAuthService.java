@@ -104,8 +104,7 @@ public class BaseAuthService implements AuthService {
     private void createTableIfNotExist() {
 
         String sql = "CREATE TABLE IF NOT EXISTS userData (\n" +
-                "    id       INTEGER PRIMARY KEY AUTOINCREMENT\n" +
-                "                     UNIQUE,\n" +
+                "    id       INTEGER PRIMARY KEY AUTOINCREMENT UNIQUE,\n" +
                 "    Username STRING  NOT NULL,\n" +
                 "    Login    STRING  NOT NULL ON CONFLICT FAIL,\n" +
                 "    Password STRING  NOT NULL,\n" +

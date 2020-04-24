@@ -1,23 +1,20 @@
 package ru.geekbrains.java2.server;
 
-public class ServerApp {
+import javafx.application.Application;
+import javafx.stage.Stage;
+
+public class ServerApp extends Application {
 
     private static final int DEFAULT_PORT = 8189;
 
     public static void main(String[] args) {
-        int port = getServerPort(args);
-        new NetworkServer(port).start();
+        launch(args);
     }
 
-    private static int getServerPort(String[] args) {
-        int port = DEFAULT_PORT;
-        if (args.length == 1) {
-            try {
-                port = Integer.parseInt(args[0]);
-            } catch (NumberFormatException e) {
-                System.out.println("Input port number is incorrect. Using default port");
-            }
-        }
-        return port;
+    @Override
+    public void start(Stage primaryStage) {
+        NetworkServer networkServer = new NetworkServer(DEFAULT_PORT);
+        ServerController controller = new ServerController(networkServer, primaryStage);
+        controller.startController();
     }
 }

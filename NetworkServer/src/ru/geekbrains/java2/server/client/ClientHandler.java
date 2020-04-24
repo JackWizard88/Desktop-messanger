@@ -29,6 +29,8 @@ public class ClientHandler {
     private String nickname;
     private String login;
 
+    private boolean isInterrupted;
+
     private final ExecutorService executorService = Executors.newFixedThreadPool(1);
 
     public ClientHandler(NetworkServer networkServer, Socket socket) {
@@ -47,7 +49,6 @@ public class ClientHandler {
 
             executorService.execute(() -> {
                 try {
-
                     connectionTimeOutKiller();
                     readData();
                 } catch (IOException e) {
@@ -65,6 +66,11 @@ public class ClientHandler {
 
     private void readData() throws IOException {
         while (true) {
+
+            if (isInterrupted) {
+                return;
+            }
+
             Command command = readCommand();
             if (command == null) {
                 continue;
@@ -193,5 +199,9 @@ public class ClientHandler {
         Date dateNow = new Date();
         SimpleDateFormat formatForDateNow = new SimpleDateFormat("HH:mm:ss");
         return "[" + formatForDateNow.format(dateNow) + "]";
+    }
+
+    public void setInterrupted(boolean interrupted) {
+        isInterrupted = interrupted;
     }
 }

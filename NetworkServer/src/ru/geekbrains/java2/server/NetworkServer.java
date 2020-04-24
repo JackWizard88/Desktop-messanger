@@ -9,6 +9,7 @@ import ru.geekbrains.java2.server.client.ClientHandler;
 import java.io.IOException;
 import java.net.ServerSocket;
 import java.net.Socket;
+import java.net.SocketException;
 import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.List;
@@ -19,6 +20,7 @@ public class NetworkServer {
     private final List<ClientHandler> clients = new ArrayList<>();
     private final AuthService authService;
     private static final Logger logger = LogManager.getLogger(NetworkServer.class);
+    private ServerSocket serverSocket;
 
     public NetworkServer(int port) {
         this.port = port;
@@ -26,22 +28,19 @@ public class NetworkServer {
     }
 
     public void start() {
-        try (ServerSocket serverSocket = new ServerSocket(port)) {
-            logger.info("Server started on port " + port);
-//            System.out.println("Server started on port " + port);
+        try {
+            serverSocket = new ServerSocket(port);
+            logger.info("Server STARTED on port " + port);
             authService.start();
             while (true) {
                 logger.info("Connection awaiting...");
-//                System.out.println("Connection awaiting...");
                 Socket clientSocket = serverSocket.accept();
                 logger.info("Client connected");
-//                System.out.println("Client connected");
                 createClientHandler(clientSocket);
             }
+        } catch (SocketException se) {            logger.info("Server Socket closed");
         } catch (IOException e) {
             logger.error("Error");
-//            System.out.println("Error");
-            e.printStackTrace();
         } finally {
             authService.stop();
         }
@@ -88,6 +87,21 @@ public class NetworkServer {
     public synchronized void updateUserList() throws IOException {
         List<String> users = getAllUsernames();
         sendMessage(null, "all", Command.updateUsersListCommand(users));
+    }
+
+    public int stop() {
+
+        try {
+            serverSocket.close();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+
+        for (ClientHandler client : clients) {
+            client.setInterrupted(true);
+        }
+        logger.info("Server STOPPED");
+        return 1;
     }
 
 }

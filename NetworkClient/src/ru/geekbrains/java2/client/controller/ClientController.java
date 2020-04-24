@@ -50,8 +50,8 @@ public class ClientController {
     public ClientController(String serverHost, int serverPort, Stage primaryStage) {
         this.networkService = new NetworkService(serverHost, serverPort);
         this.primaryStage = primaryStage;
-        this.authDialog = new FxAuthDialog();
-        this.clientChat = new FxChatWindow();
+//        this.authDialog = new FxAuthDialog();
+//        this.clientChat = new FxChatWindow();
     }
 
     public void runApplication() throws IOException {

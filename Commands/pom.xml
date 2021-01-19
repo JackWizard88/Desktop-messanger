@@ -7,6 +7,10 @@
     <artifactId>ClientServerCommands</artifactId>
     <version>1.0</version>
 
+    <properties>
+        <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+    </properties>
+
     <parent>
         <groupId>main</groupId>
         <artifactId>module_project</artifactId>

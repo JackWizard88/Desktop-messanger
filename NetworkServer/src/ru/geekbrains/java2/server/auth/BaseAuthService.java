@@ -2,13 +2,14 @@ package ru.geekbrains.java2.server.auth;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
+import ru.geekbrains.java2.server.Entities.User;
 
 import java.sql.*;
 
 public class BaseAuthService implements AuthService {
 
     private static Connection sqlconnection;
-    private static final String USERDATA_DATABASE = "userDB.db" ;
+    private static final String USERDATA_DATABASE = "userDB.db";
     private static final Logger logger = LogManager.getLogger(BaseAuthService.class);
 
     public static void connectSQL() throws SQLException {
@@ -24,10 +25,10 @@ public class BaseAuthService implements AuthService {
     public synchronized void changeNickName(String username, String newNickname) {
         try {
             String sql = "UPDATE userData SET Username = ? WHERE Login = ?";
-            PreparedStatement statement = sqlconnection.prepareStatement( sql );
+            PreparedStatement statement = sqlconnection.prepareStatement(sql);
             logger.info(username + " changed name to " + newNickname);
-            statement.setString( 1, newNickname);
-            statement.setString( 2, username);
+            statement.setString(1, newNickname);
+            statement.setString(2, username);
             statement.execute();
         } catch (SQLException e) {
             e.printStackTrace();
@@ -39,7 +40,7 @@ public class BaseAuthService implements AuthService {
         try {
             String sql2 = "UPDATE userData SET Logged = false WHERE Login = ?";
             PreparedStatement statement2 = sqlconnection.prepareStatement(sql2);
-            statement2.setString( 1, login);
+            statement2.setString(1, login);
             statement2.execute();
         } catch (SQLException e) {
             e.printStackTrace();
@@ -51,8 +52,8 @@ public class BaseAuthService implements AuthService {
 
         try {
             String sql = "SELECT EXISTS(SELECT * FROM userData WHERE Login = ?)";
-            PreparedStatement statement = sqlconnection.prepareStatement( sql );
-            statement.setString( 1, login);
+            PreparedStatement statement = sqlconnection.prepareStatement(sql);
+            statement.setString(1, login);
 
             ResultSet rs = statement.executeQuery();
 
@@ -62,9 +63,9 @@ public class BaseAuthService implements AuthService {
             } else {
                 String sql2 = "INSERT INTO userData (Login, Password, Username) VALUES (?, ?, ?)";
                 PreparedStatement statement2 = sqlconnection.prepareStatement(sql2);
-                statement2.setString( 1, login);
-                statement2.setString( 2, password);
-                statement2.setString( 3, nickname);
+                statement2.setString(1, login);
+                statement2.setString(2, password);
+                statement2.setString(3, nickname);
                 statement2.execute();
                 logger.info(String.format("NEW USER CREATED LOGIN: %s, USERNAME: %s", login, nickname));
             }
@@ -80,17 +81,20 @@ public class BaseAuthService implements AuthService {
 
         try {
             String sql = "SELECT * FROM userData WHERE Login = ?";
-            PreparedStatement statement = sqlconnection.prepareStatement( sql );
-            statement.setString( 1, login);
+            PreparedStatement statement = sqlconnection.prepareStatement(sql);
+            statement.setString(1, login);
 
             ResultSet rs = statement.executeQuery();
 
-            if (rs.getBoolean(5)) return null;
-            else if (rs.getString(4).equals(password)) {
-                username = rs.getString(2);
+            User user = UserMapper.map(rs);
+
+            if (user.isLoggedIn())
+                return null;
+            else if (user.getPassword().equals(password)) {
+                username = user.getUsername();
                 String sql1 = "UPDATE userData SET Logged = true WHERE Login = ?";
                 PreparedStatement statement1 = sqlconnection.prepareStatement(sql1);
-                statement1.setString( 1, login);
+                statement1.setString(1, login);
                 statement1.execute();
             }
 
@@ -103,13 +107,12 @@ public class BaseAuthService implements AuthService {
 
     private void createTableIfNotExist() {
 
-        String sql = "CREATE TABLE IF NOT EXISTS userData (\n" +
-                "    id       INTEGER PRIMARY KEY AUTOINCREMENT UNIQUE,\n" +
-                "    Username STRING  NOT NULL,\n" +
-                "    Login    STRING  NOT NULL ON CONFLICT FAIL,\n" +
-                "    Password STRING  NOT NULL,\n" +
-                "    Logged   BOOLEAN DEFAULT False\n" +
-                ");";
+        String sql = "CREATE TABLE IF NOT EXISTS userData (\n"
+                + "    id       INTEGER PRIMARY KEY AUTOINCREMENT UNIQUE,\n"
+                + "    Username STRING  NOT NULL,\n"
+                + "    Login    STRING  NOT NULL ON CONFLICT FAIL,\n"
+                + "    Password STRING  NOT NULL,\n"
+                + "    Logged   BOOLEAN DEFAULT False\n" + ");";
 
         try {
             Statement stm = sqlconnection.createStatement();
@@ -134,7 +137,6 @@ public class BaseAuthService implements AuthService {
         }
         logger.info("Auth service started");
     }
-
 
     @Override
     public void stop() {

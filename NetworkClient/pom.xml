@@ -66,7 +66,7 @@
                 <configuration>
                     <archive>
                         <manifest>
-                            <mainClass>ru.geekbrains.java2.client.NetworkClient</mainClass>
+                            <mainClass>ru.jackwizard88.destktopmessenger.client.NetworkClient</mainClass>
                         </manifest>
                     </archive>
                     <descriptorRefs>
@@ -84,6 +84,13 @@
             <groupId>main</groupId>
             <artifactId>ClientServerCommands</artifactId>
             <version>1.0</version>
+        </dependency>
+
+        <!-- https://mvnrepository.com/artifact/org.apache.logging.log4j/log4j-core -->
+        <dependency>
+            <groupId>org.apache.logging.log4j</groupId>
+            <artifactId>log4j-core</artifactId>
+            <version>2.17.1</version>
         </dependency>
 
     </dependencies>

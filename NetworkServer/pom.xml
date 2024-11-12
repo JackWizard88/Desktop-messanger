@@ -43,7 +43,7 @@
                 <configuration>
                     <archive>
                         <manifest>
-                            <mainClass>ru.geekbrains.java2.server.ServerApp</mainClass>
+                            <mainClass>ru.jackwizard88.destktopmessenger.server.ServerApp</mainClass>
                         </manifest>
                     </archive>
                     <descriptorRefs>

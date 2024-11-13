@@ -1,12 +1,14 @@
 package ru.jackwizard88.destktopmessenger.server.controller.fxview;
 
+import javafx.application.Platform;
+import javafx.collections.FXCollections;
 import javafx.fxml.FXML;
-import javafx.scene.control.Button;
-import javafx.scene.control.Label;
+import javafx.scene.control.*;
 import javafx.scene.paint.Color;
 import ru.jackwizard88.destktopmessenger.server.NetworkServer;
 
 import java.io.IOException;
+import java.util.List;
 
 public class FxServerApp {
 
@@ -29,14 +31,19 @@ public class FxServerApp {
     private Label labelServerStatus;
 
     @FXML
+    private ListView<String> onlineClientsList;
+
+    @FXML
     void initialize() {
 
         buttonStop.setDisable(true);
+        onlineClientsList.autosize();
 
         buttonStart.setOnAction(e -> {
             if (!isRunning) {
                 networkServerThread = new Thread(() -> networkServer.start(), "NetworkServerThread");
                 networkServerThread.start();
+                networkServer.setFXServerApp(this);
                 labelServerStatus.setText("Server status: ONLINE");
                 labelServerStatus.setTextFill(Color.GREEN);
                 isRunning = true;
@@ -61,4 +68,11 @@ public class FxServerApp {
             }
         });
     }
+
+    public void setOnlineClientsList(List<String> users) {
+
+        Platform.runLater(() -> onlineClientsList.setItems(FXCollections.observableList(users)));
+
+    }
+
 }

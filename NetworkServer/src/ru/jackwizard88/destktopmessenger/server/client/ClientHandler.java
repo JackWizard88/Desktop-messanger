@@ -93,11 +93,18 @@ public class ClientHandler {
                     break;
                 }
                 case CHANGE_NICKNAME: {
+
                     ChangeNicknameCommand commandData = (ChangeNicknameCommand) command.getData();
                     String login = commandData.getLogin();
-                    nickname = commandData.getUsername();
+                    String oldnickname = nickname;
                     networkServer.getAuthService().changeNickName(login, nickname);
+
+                    //broadcast to all about change nickname
+                    nickname = commandData.getUsername();
                     networkServer.updateUserList();
+                    String message = String.format("%s: %s изменил имя на %s", getTime(), oldnickname, nickname );
+                    networkServer.sendMessage(this, BROADCAST_TAG, Command.messageCommand(nickname, message, BROADCAST_TAG));
+
                     break;
                 }
                 case REGISTER: {

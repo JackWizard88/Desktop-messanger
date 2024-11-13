@@ -6,6 +6,8 @@ import ru.jackwizard88.destktopmessenger.commands.Command;
 import ru.jackwizard88.destktopmessenger.server.auth.AuthService;
 import ru.jackwizard88.destktopmessenger.server.auth.BaseAuthService;
 import ru.jackwizard88.destktopmessenger.server.client.ClientHandler;
+import ru.jackwizard88.destktopmessenger.server.controller.fxview.FxServerApp;
+
 import java.io.IOException;
 import java.net.ServerSocket;
 import java.net.Socket;
@@ -21,6 +23,7 @@ public class NetworkServer {
     private final AuthService authService;
     private static final Logger logger = LogManager.getLogger(NetworkServer.class);
     private ServerSocket serverSocket;
+    private FxServerApp fxServerApp;
 
     public NetworkServer(int port) {
         this.port = port;
@@ -86,6 +89,7 @@ public class NetworkServer {
     public synchronized void updateUserList() throws IOException {
         List<String> users = getAllUsernames();
         sendMessage(null, "all", Command.updateUsersListCommand(users));
+        fxServerApp.setOnlineClientsList(users);
     }
 
     public int stop() throws IOException {
@@ -104,4 +108,7 @@ public class NetworkServer {
         return 1;
     }
 
+    public void setFXServerApp(FxServerApp fxServerApp) {
+        this.fxServerApp = fxServerApp;
+    }
 }

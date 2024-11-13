@@ -6,9 +6,9 @@
         <sourceOutputDir name="target/generated-sources/annotations" />
         <sourceTestOutputDir name="target/generated-test-sources/test-annotations" />
         <outputRelativeToContentRoot value="true" />
-        <module name="NetworkClient" />
-        <module name="NetworkServer" />
-        <module name="Commands" />
+        <module name="JackServer" />
+        <module name="ClientServerCommands" />
+        <module name="JackClient" />
       </profile>
     </annotationProcessing>
     <bytecodeTargetLevel>

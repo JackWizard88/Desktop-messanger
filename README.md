@@ -1,14 +1,14 @@
-# Desktop-messanger
+# Desktop-messenger
 
-Java course of developmet desktop messenger.
-Contains of Client and Server
+Development of desktop messenger.
+Contains Client and Server
 
-- Auth, login, users.
-- Message history
-- NIO, Serialization
-- File
-- JavaFX
-- SQL
-- Logger
-- MultiThreading
-- Message censoring
+- Auth, login and hashed password, users;
+- Message history and private messaging;
+- NIO, Serialization;
+- File IO;
+- JavaFX;
+- SQL;
+- Apach Logger;
+- MultiThreading;
+- Message censoring;
